@@ -6,5 +6,11 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.141.1",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
     "python-docx>=1.2.0",
 ]
+
+[tool.pytest.ini_options]
+addopts = "-ra -v --tb=short"
+testpaths = ["tests"]
