@@ -21,6 +21,7 @@ def sample_cv():
         user_data=user_data(
             name="John Doe",
             email="john@example.com",
+            picture="./test_output/cv_pic.png",
             phone_number="+44 123456789",
             linkedin="linkedin.com/in/johndoe",
             portfolio="johndoe.dev",

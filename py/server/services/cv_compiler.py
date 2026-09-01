@@ -270,6 +270,17 @@ class CVCompiler:
         user_data: user_data
     ):
 
+        if user_data.picture:
+            try:
+                document.add_picture(
+                    user_data.picture,
+                    width=Inches(1.0)
+                )
+                last_paragraph = document.paragraphs[-1] 
+                last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            except Exception as e:
+                print(f"Error adding picture: {e}")
+
         paragraph = document.add_paragraph()
 
         paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
