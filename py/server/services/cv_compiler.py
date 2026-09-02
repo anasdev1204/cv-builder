@@ -1,6 +1,7 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import subprocess
+from turtle import st
 
 from docx import Document
 from docx.shared import Pt, Inches
@@ -612,6 +613,58 @@ class CVCompiler:
 
         return str(pdf_path)
 
+    @staticmethod
+    def to_entries(cv: CV, selected_version: str) -> list[str]:
+        entries = []
+
+        for version, sections in cv.sections.items():
+            if selected_version and version != selected_version:
+                continue
+
+            for section_name, data in sections.__dict__.items():
+                if data is None:
+                    continue
+
+                if isinstance(data, SectionMeta):
+                    content = data.content
+
+                    if isinstance(content, str):
+                        entries.append(content)
+
+                    elif isinstance(content, list):
+                        for item in content:
+                            if isinstance(item, SectionEntry):
+                                entries.extend(item.bullet_points)
+                            elif isinstance(item, str):
+                                entries.append(item)
+
+                elif isinstance(data, dict):
+                    for _, sub_data in data.items():
+                        if not sub_data:
+                            continue
+
+                        content = sub_data.content
+
+                        if isinstance(content, str):
+                            entries.append(content)
+
+                        elif isinstance(content, list):
+                            for item in content:
+                                if isinstance(item, SectionEntry):
+                                    entries.extend(item.bullet_points)
+                                elif isinstance(item, str):
+                                    entries.append(item)
+
+        return entries
+
+    @staticmethod
+    def to_json(sc: CV) -> dict:
+        return sc.model_dump()
+        
+    @staticmethod
+    def from_json(json_data: dict) -> CV:
+        return CV.model_validate(json_data)
+    
     @staticmethod
     def _safe_filename(
         name: str
