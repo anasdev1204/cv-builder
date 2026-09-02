@@ -1,0 +1,94 @@
+page:
+  margins:
+    top: 0.55
+    bottom: 0.55
+    left: 0.65
+    right: 0.65
+
+font:
+  family: Arial
+  size: 9.5
+
+header:
+  alignment: center
+
+  name:
+    size: 20
+    bold: true
+    italic: false
+
+  contact:
+    size: 9
+    bold: false
+    italic: false
+    separator: " | "
+
+section:
+  heading:
+    size: 10.5
+    bold: true
+    italic: false
+    uppercase: false
+    underline: false
+    space_before: 6
+    space_after: 3
+
+  space_before: 0
+  space_after: 5
+
+entry:
+  layout: stacked
+  space_before: 3
+
+  title:
+    family: Arial
+    size: 9.5
+    bold: true
+    italic: false
+
+  subtitle:
+    family: Arial
+    size: 9.5
+    bold: false
+    italic: false
+
+  subtitle_separator: " — "
+
+  dates:
+    size: 8.5
+    bold: false
+    italic: true
+    separator: " – "
+    space_before: 0
+    space_after: 1
+
+  bullets:
+    size: 9.5
+    indent: 0.2
+    hanging_indent: null
+    space_before: 0
+    space_after: 3
+
+  show_dates: true
+  show_bullets: true
+
+list:
+  separator: " • "
+  size: 9.5
+
+sections:
+
+  summary:
+    renderer: paragraph
+
+  experience:
+    renderer: entries
+
+  education:
+    renderer: entries
+
+  skills:
+    renderer: inline_list
+
+  languages:
+    renderer: inline_list

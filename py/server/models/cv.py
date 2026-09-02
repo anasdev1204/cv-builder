@@ -7,7 +7,7 @@ class Address(BaseModel):
     city: str
 
 
-class user_data(BaseModel):
+class UserData(BaseModel):
     name: str
     email: str
     picture: str | None = None
@@ -40,5 +40,5 @@ class CvSections(BaseModel):
     )
 
 class CV(BaseModel):
-    user_data: user_data
+    user_data: UserData
     sections: dict[str, CvSections] = Field(default_factory=dict)

@@ -1,0 +1,93 @@
+page:
+  margins:
+    top: 0.4
+    bottom: 0.4
+    left: 0.5
+    right: 0.5
+
+font:
+  family: Calibri
+  size: 10
+
+header:
+  alignment: left
+
+  name:
+    size: 24
+    bold: true
+    italic: false
+
+  contact:
+    size: 9
+    bold: false
+    italic: false
+    separator: " · "
+
+section:
+  heading:
+    size: 12
+    bold: true
+    italic: false
+    uppercase: true
+    underline: true
+    space_before: 10
+    space_after: 5
+
+  space_before: 0
+  space_after: 6
+
+entry:
+  layout: compact
+  space_before: 5
+
+  title:
+    family: Calibri
+    size: 10
+    bold: true
+    italic: false
+
+  subtitle:
+    family: Calibri
+    size: 10
+    bold: false
+    italic: true
+
+  subtitle_separator: " | "
+
+  dates:
+    size: 9
+    bold: false
+    italic: false
+    separator: " — "
+    space_before: 0
+    space_after: 2
+
+  bullets:
+    size: 10
+    indent: 0.25
+    hanging_indent: 0.15
+    space_before: 0
+    space_after: 2
+
+  show_dates: true
+  show_bullets: true
+
+list:
+  separator: " · "
+  size: 10
+
+sections:
+  summary:
+    renderer: paragraph
+
+  experience:
+    renderer: entries
+
+  education:
+    renderer: entries
+
+  skills:
+    renderer: inline_list
+
+  languages:
+    renderer: inline_list

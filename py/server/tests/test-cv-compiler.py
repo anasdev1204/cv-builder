@@ -6,9 +6,8 @@ from docx import Document
 from models.cv import (
     CV,
     SectionMeta,
-    user_data,
+    UserData,
     Address,
-    CvSections,
     SectionEntry,
 )
 
@@ -18,7 +17,7 @@ from services.cv_compiler import CVCompiler
 @pytest.fixture
 def sample_cv():
     return CV(
-        user_data=user_data(
+        user_data=UserData(
             name="John Doe",
             email="john@example.com",
             picture="./test_output/cv_pic.png",
@@ -124,7 +123,6 @@ async def test_compile_docx_creates_file(
 ):
     output_path = await compiler.compile(
         cv=sample_cv,
-        template="professional",
         output_format="docx",
         selected_version="en"
     )
@@ -134,7 +132,6 @@ async def test_compile_docx_creates_file(
     assert path.exists()
     assert path.is_file()
     assert path.suffix == ".docx"
-
 
 @pytest.mark.asyncio
 async def test_compile_docx_contains_personal_information(
@@ -300,166 +297,68 @@ async def test_compile_docx_contains_other_sections(
                     assert entry.start_date in text
                     assert all(bp in text for bp in entry.bullet_points)
 
+@pytest.mark.asyncio
+async def test_filename_is_based_on_user_name(
+    compiler,
+    sample_cv,
+):
+    output_path = await compiler.compile(
+        cv=sample_cv,
+        output_format="docx",
+    )
 
-# @pytest.mark.asyncio
-# async def test_empty_optional_sections_do_not_create_headings(
-#     compiler,
-# ):
-#     cv = CV(
-#         user_data=user_data(
-#             name="John Doe",
-#             email="john@example.com",
-#         ),
-#         sections=CvSections(),
-#     )
-
-#     output_path = await compiler.compile(
-#         cv=cv,
-#         output_format="docx",
-#     )
-
-#     document = Document(output_path)
-#     text = get_all_paragraph_text(document)
-
-#     assert "John Doe" in text
-#     assert "john@example.com" in text
-
-#     assert "SUMMARY" not in text
-#     assert "EXPERIENCE" not in text
-#     assert "EDUCATION" not in text
-#     assert "SKILLS" not in text
-#     assert "LANGUAGES" not in text
+    assert Path(output_path).name == "John Doe.docx"
 
 
-# @pytest.mark.asyncio
-# async def test_empty_bullet_points_are_handled(
-#     compiler,
-# ):
-#     cv = CV(
-#         user_data=user_data(
-#             name="John Doe",
-#             email="john@example.com",
-#         ),
-#         sections=CvSections(
-#             experience=[
-#                 SectionEntry(
-#                     title="Software Engineer",
-#                     subtitle="Company",
-#                     bullet_points=[],
-#                 )
-#             ]
-#         ),
-#     )
+def test_safe_filename_removes_invalid_characters():
+    result = CVCompiler._safe_filename(
+        "John / Doe: Test?"
+    )
 
-#     output_path = await compiler.compile(
-#         cv=cv,
-#         output_format="docx",
-#     )
-
-#     document = Document(output_path)
-#     text = get_all_paragraph_text(document)
-
-#     assert "Software Engineer" in text
-#     assert "Company" in text
+    assert result == "John  Doe Test"
 
 
-# @pytest.mark.asyncio
-# async def test_missing_dates_are_handled(
-#     compiler,
-# ):
-#     cv = CV(
-#         user_data=user_data(
-#             name="John Doe",
-#             email="john@example.com",
-#         ),
-#         sections=CvSections(
-#             experience=[
-#                 SectionEntry(
-#                     title="Software Engineer",
-#                     subtitle="Company",
-#                     bullet_points=[
-#                         "Developed software."
-#                     ],
-#                 )
-#             ]
-#         ),
-#     )
-
-#     output_path = await compiler.compile(
-#         cv=cv,
-#         output_format="docx",
-#     )
-
-#     document = Document(output_path)
-#     text = get_all_paragraph_text(document)
-
-#     assert "Software Engineer" in text
-#     assert "Company" in text
-#     assert "Developed software." in text
+@pytest.mark.asyncio
+async def test_unsupported_format_raises_error(
+    compiler,
+    sample_cv,
+):
+    with pytest.raises(
+        ValueError,
+        match="Unsupported format"
+    ):
+        await compiler.compile(
+            cv=sample_cv,
+            output_format="txt",
+        )
 
 
-# @pytest.mark.asyncio
-# async def test_filename_is_based_on_user_name(
-#     compiler,
-#     sample_cv,
-# ):
-#     output_path = await compiler.compile(
-#         cv=sample_cv,
-#         output_format="docx",
-#     )
+@pytest.mark.asyncio
+async def test_pdf_conversion_is_called(
+    compiler,
+    sample_cv,
+    monkeypatch,
+    tmp_path,
+):
+    docx_path = tmp_path / "John Doe.docx"
+    docx_path.touch()
 
-#     assert Path(output_path).name == "John Doe.docx"
+    called = {}
 
+    def fake_convert(path):
+        called["path"] = path
+        return str(tmp_path / "John Doe.pdf")
 
-# def test_safe_filename_removes_invalid_characters():
-#     result = CVCompiler._safe_filename(
-#         "John / Doe: Test?"
-#     )
+    monkeypatch.setattr(
+        compiler,
+        "_convert_to_pdf",
+        fake_convert,
+    )
 
-#     assert result == "John  Doe Test"
+    result = await compiler.compile(
+        cv=sample_cv,
+        output_format="pdf",
+    )
 
-
-# @pytest.mark.asyncio
-# async def test_unsupported_format_raises_error(
-#     compiler,
-#     sample_cv,
-# ):
-#     with pytest.raises(
-#         ValueError,
-#         match="Unsupported format"
-#     ):
-#         await compiler.compile(
-#             cv=sample_cv,
-#             output_format="txt",
-#         )
-
-
-# @pytest.mark.asyncio
-# async def test_pdf_conversion_is_called(
-#     compiler,
-#     sample_cv,
-#     monkeypatch,
-#     tmp_path,
-# ):
-#     docx_path = tmp_path / "John Doe.docx"
-#     docx_path.touch()
-
-#     called = {}
-
-#     def fake_convert(path):
-#         called["path"] = path
-#         return str(tmp_path / "John Doe.pdf")
-
-#     monkeypatch.setattr(
-#         compiler,
-#         "_convert_to_pdf",
-#         fake_convert,
-#     )
-
-#     result = await compiler.compile(
-#         cv=sample_cv,
-#         output_format="pdf",
-#     )
-
-#     assert called["path"].suffix == ".docx"
-#     assert result.endswith(".pdf")
+    assert called["path"].suffix == ".docx"
+    assert result.endswith(".pdf")
