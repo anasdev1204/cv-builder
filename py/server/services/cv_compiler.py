@@ -187,7 +187,9 @@ class CVCompiler:
         normal.font.bold = config.font.bold
         normal.font.italic = config.font.italic
         normal.font.underline = config.font.underline
-        normal.font.color.rgb = config.font.color
+        normal.font.color.rgb = RGBColor.from_string(
+            config.font.color.lstrip("#")
+        )
         normal.font.character_spacing = Pt(config.font.character_spacing
         )
 
@@ -230,6 +232,7 @@ class CVCompiler:
         )
 
         if job_title:
+            print(f"Adding job title: {job_title}")
             paragraph = document.add_paragraph()
             paragraph.alignment = alignment
             paragraph.paragraph_format.space_before = Pt(0)
@@ -395,21 +398,17 @@ class CVCompiler:
                 title,
                 content,
                 config,
+                section_config
             )
 
         elif renderer == "entries":
-
-            entry_config = (
-                section_config.entry
-                or config.entry
-            )
 
             self._add_bp(
                 document,
                 title,
                 content,
                 config,
-                entry_config,
+                section_config,
             )
 
         elif renderer == "inline_list":
@@ -419,6 +418,7 @@ class CVCompiler:
                 title,
                 content,
                 config,
+                section_config
             )
 
         else:

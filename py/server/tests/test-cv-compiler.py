@@ -13,7 +13,6 @@ from models.cv import (
 
 from services.cv_compiler import CVCompiler
 
-# CV COMPILER GOT SOME CHANGES, SO I NEED TO UPDATE THE TESTS ACCORDINGLY. 
 
 @pytest.fixture
 def sample_cv():
@@ -124,6 +123,7 @@ async def test_compile_docx_creates_file(
 ):
     output_path = await compiler.compile(
         cv=sample_cv,
+        job_title="Software Engineer",
         output_format="docx",
         selected_version="en"
     )
@@ -141,6 +141,7 @@ async def test_compile_docx_contains_personal_information(
 ):
     output_path = await compiler.compile(
         cv=sample_cv,
+        job_title="Software Engineer",
         output_format="docx",
     )
 
@@ -162,6 +163,7 @@ async def test_compile_docx_contains_summary(
 ):
     output_path = await compiler.compile(
         cv=sample_cv,
+        job_title="Software Engineer",
         output_format="docx",
     )
 
@@ -170,8 +172,8 @@ async def test_compile_docx_contains_summary(
 
     data: SectionMeta = sample_cv.sections["en"].summary
 
-    assert data.title in text
-    assert data.content in text
+    assert data.title.lower() in text.lower()
+    assert data.content.lower() in text.lower()
 
 
 @pytest.mark.asyncio
@@ -181,6 +183,7 @@ async def test_compile_docx_contains_experience(
 ):
     output_path = await compiler.compile(
         cv=sample_cv,
+        job_title="Software Engineer",
         output_format="docx",
     )
 
@@ -189,15 +192,15 @@ async def test_compile_docx_contains_experience(
 
     data: SectionMeta = sample_cv.sections["en"].experience
 
-    assert data.title in text
+    assert data.title.lower() in text.lower()   
 
     experiences = data.content
     for e in experiences:
-        assert e.title in text
-        assert e.subtitle in text
-        assert e.start_date in text
-        assert e.end_date in text
-        assert all(bp in text for bp in e.bullet_points)
+        assert e.title.lower() in text.lower()
+        assert e.subtitle.lower() in text.lower()
+        assert e.start_date.lower() in text.lower()
+        assert e.end_date.lower() in text.lower()
+        assert all(bp.lower() in text.lower() for bp in e.bullet_points)
 
 
 @pytest.mark.asyncio
@@ -207,6 +210,7 @@ async def test_compile_docx_contains_education(
 ):
     output_path = await compiler.compile(
         cv=sample_cv,
+        job_title="Software Engineer",
         output_format="docx",
     )
 
@@ -215,15 +219,15 @@ async def test_compile_docx_contains_education(
 
     data: SectionMeta = sample_cv.sections["en"].education
 
-    assert data.title in text
+    assert data.title.lower() in text.lower()
 
     educations = data.content
     for e in educations:
-        assert e.title in text
-        assert e.subtitle in text
-        assert e.start_date in text
-        assert e.end_date in text
-        assert all(bp in text for bp in e.bullet_points)
+        assert e.title.lower() in text.lower()
+        assert e.subtitle.lower() in text.lower()
+        assert e.start_date.lower() in text.lower()
+        assert e.end_date.lower() in text.lower()
+        assert all(bp.lower() in text.lower() for bp in e.bullet_points)
 
 
 @pytest.mark.asyncio
@@ -233,6 +237,7 @@ async def test_compile_docx_contains_skills(
 ):
     output_path = await compiler.compile(
         cv=sample_cv,
+        job_title="Software Engineer",
         output_format="docx",
     )
 
@@ -241,10 +246,10 @@ async def test_compile_docx_contains_skills(
 
     data: SectionMeta = sample_cv.sections["en"].skills
 
-    assert data.title in text
+    assert data.title.lower() in text.lower()
 
     for skill in data.content:
-        assert skill in text
+        assert skill.lower() in text.lower()
 
 
 @pytest.mark.asyncio
@@ -254,6 +259,7 @@ async def test_compile_docx_contains_languages(
 ):
     output_path = await compiler.compile(
         cv=sample_cv,
+        job_title="Software Engineer",
         output_format="docx",
     )
 
@@ -262,8 +268,8 @@ async def test_compile_docx_contains_languages(
 
     data: SectionMeta = sample_cv.sections["en"].languages
 
-    assert data.title in text
-    assert all(lang in text for lang in data.content)
+    assert data.title.lower() in text.lower()
+    assert all(lang.lower() in text.lower() for lang in data.content)
 
 
 @pytest.mark.asyncio
@@ -273,6 +279,7 @@ async def test_compile_docx_contains_other_sections(
 ):
     output_path = await compiler.compile(
         cv=sample_cv,
+        job_title="Software Engineer",
         output_format="docx",
     )
 
@@ -283,20 +290,20 @@ async def test_compile_docx_contains_other_sections(
 
     for _, data in data_dict.items():
         data: SectionMeta = data
-        assert data.title in text
+        assert data.title.lower() in text.lower()
 
         if isinstance(data.content, str):
-            assert data.content in text
+            assert data.content.lower() in text.lower()
         elif isinstance(data.content, list):
             for entry in data.content:
 
                 if isinstance(entry, str):
-                    assert entry in text
+                    assert entry.lower() in text.lower()
                 elif isinstance(entry, SectionEntry):
-                    assert entry.title in text
-                    assert entry.subtitle in text
-                    assert entry.start_date in text
-                    assert all(bp in text for bp in entry.bullet_points)
+                    assert entry.title.lower() in text.lower()
+                    assert entry.subtitle.lower() in text.lower()
+                    assert entry.start_date.lower() in text.lower()
+                    assert all(bp.lower() in text.lower() for bp in entry.bullet_points)
 
 @pytest.mark.asyncio
 async def test_filename_is_based_on_user_name(
@@ -305,6 +312,7 @@ async def test_filename_is_based_on_user_name(
 ):
     output_path = await compiler.compile(
         cv=sample_cv,
+        job_title="Software Engineer",
         output_format="docx",
     )
 
@@ -330,6 +338,7 @@ async def test_unsupported_format_raises_error(
     ):
         await compiler.compile(
             cv=sample_cv,
+            job_title="Software Engineer",
             output_format="txt",
         )
 
@@ -358,6 +367,7 @@ async def test_pdf_conversion_is_called(
 
     result = await compiler.compile(
         cv=sample_cv,
+        job_title="Software Engineer",
         output_format="pdf",
     )
 

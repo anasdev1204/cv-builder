@@ -47,7 +47,7 @@ header:
     color: "#000000"
     character_spacing: 0
 
-  show_picture: false
+  show_picture: true
   picture_size: 1.0
 
   space_before: 0
@@ -103,10 +103,13 @@ entry:
   subtitle_separator: " — "
 
   dates:
+    family: Arial
     size: 8.5
     bold: false
     italic: true
+    underline: false
     color: "#000000"
+    character_spacing: 0
     separator: " – "
     format: year
     space_before: 0

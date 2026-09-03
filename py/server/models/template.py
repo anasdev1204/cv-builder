@@ -72,7 +72,7 @@ class HeadingConfig(BaseModel):
     divider_color: str = "#000000"
 
 
-class DateConfig(BaseModel):
+class DateConfig(FontConfig):
     size: float = 8.5
     bold: bool = False
     italic: bool = True
