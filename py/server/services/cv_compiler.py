@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import subprocess
 from turtle import st
@@ -232,7 +233,6 @@ class CVCompiler:
         )
 
         if job_title:
-            print(f"Adding job title: {job_title}")
             paragraph = document.add_paragraph()
             paragraph.alignment = alignment
             paragraph.paragraph_format.space_before = Pt(0)
@@ -958,27 +958,32 @@ class CVCompiler:
 
     def _convert_to_pdf(
         self,
-        docx_path: Path
-    ) -> str:
-
+        docx_path: Path,
+    ) -> Path:
         output_directory = docx_path.parent
 
+        
         subprocess.run(
             [
-                "libreoffice",
+                os.getenv("LIBREOFFICE_PATH", "soffice"),
                 "--headless",
                 "--convert-to",
                 "pdf",
                 "--outdir",
                 str(output_directory),
-                str(docx_path)
+                str(docx_path),
             ],
-            check=True
+            check=True,
         )
-
+        
         pdf_path = docx_path.with_suffix(".pdf")
 
-        return str(pdf_path)
+        if not pdf_path.exists():
+            raise FileNotFoundError(
+                f"PDF conversion failed: {pdf_path}"
+            )
+
+        return pdf_path
 
     def _compile_doc_url(self, path: Path) -> FileResponse:
         if not path.exists():

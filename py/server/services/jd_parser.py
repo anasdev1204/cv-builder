@@ -129,4 +129,5 @@ Do not invent requirements that are not supported by the job description.
     ):
         raise RuntimeError("The response was interrupted by the content filter.")
 
-    return response.output_text, response.usage.input_tokens, response.usage.output_tokens
+    result = ParsedJD.model_validate_json(response.output_text)
+    return result, response.usage.input_tokens, response.usage.output_tokens

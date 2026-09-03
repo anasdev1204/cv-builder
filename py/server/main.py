@@ -7,6 +7,7 @@ from openai import (
     AsyncOpenAI,
     RateLimitError,
 )
+from models.cvmatch import CVMatchResult
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from fastapi import FastAPI
@@ -59,7 +60,7 @@ app.add_middleware(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        os.getenv("ALLOWED_ORIGIN", "https://yourdomain.com"),
+        os.getenv("ALLOWED_ORIGIN"),
     ],
     allow_credentials=False,
     allow_methods=[
@@ -82,6 +83,7 @@ def get_openai_client(api_key: str) -> AsyncOpenAI:
 
 
 def handle_openai_error(exc: Exception) -> HTTPException:
+    print(exc)
     if isinstance(exc, APITimeoutError):
         return HTTPException(
             status_code=status.HTTP_504_GATEWAY_TIMEOUT,
@@ -104,7 +106,6 @@ def handle_openai_error(exc: Exception) -> HTTPException:
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         detail="An unexpected error occurred.",
     )
-
 
 @router.post(
     "/job-description/parse",
@@ -147,7 +148,7 @@ async def parse_jd(request: Request, body: ParseJDRequest):
 
 @router.post(
     "/cv/match",
-    response_model=AIResponse[dict],
+    response_model=AIResponse[CVMatchResult],
     responses={
         400: {"model": ErrorResponse},
         429: {"model": ErrorResponse},
@@ -159,8 +160,8 @@ async def parse_jd(request: Request, body: ParseJDRequest):
 async def match_cv(request: Request, body: MatchCVRequest):
     try:
         cv = CVCompiler.from_json(body.cv_raw)
-        cv_entries = CVCompiler.to_entries(cv)
-
+        cv_entries = CVCompiler.to_entries(cv, body.selected_version)
+        print(cv_entries)
         client = get_openai_client(body.openai_api_key)
 
         result, input_tokens, output_tokens = await asyncio.wait_for(
@@ -168,13 +169,13 @@ async def match_cv(request: Request, body: MatchCVRequest):
                 client=client,
                 parsed_jd=body.parsed_jd,
                 cv_entries=cv_entries,
-                model=body.model,
+                model=body.chosen_model,
             ),
             timeout=35,
         )
 
         return {
-            "result": result.model_dump(),
+            "result": result,
             "input_tokens": input_tokens,
             "output_tokens": output_tokens,
         }
@@ -210,7 +211,6 @@ async def compile_cv_endpoint(
 ):
     try:
         cv = CVCompiler.from_json(body.cv_data)
-
         compiler = CVCompiler(
             template_config=body.template_config,
         )

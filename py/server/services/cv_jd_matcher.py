@@ -73,7 +73,6 @@ CV entries:
         },
     )
 
-
     message = next((item for item in response.output if item.type == "message"), None)
     message_content = message.content[0] if message and message.content else None
 
@@ -92,4 +91,5 @@ CV entries:
     ):
         raise RuntimeError("The response was interrupted by the content filter.")
 
-    return response.output_text, response.usage.input_tokens, response.usage.output_tokens
+    result = CVMatchResult.model_validate_json(response.output_text)
+    return result, response.usage.input_tokens, response.usage.output_tokens
