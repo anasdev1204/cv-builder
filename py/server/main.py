@@ -4,7 +4,7 @@ import asyncio
 
 from models.cv import CV
 from models.jd import ParsedJD
-from py.server.models.requests import CompileCVRequest, ErrorResponse, MatchCVRequest, ParseJDRequest
+from models.requests import CompileCVRequest, ErrorResponse, MatchCVRequest, ParseJDRequest
 from services.cv_compiler import CVCompiler
 from services.jd_parser import parse_job_description
 from services.cv_jd_matcher import match_cv_entries
@@ -57,7 +57,7 @@ async def parse_jd(request: ParseJDRequest):
     client = get_openai_client(request.openai_api_key)
 
     try:
-        return await asyncio.wait_for(
+        result, input_tokens, output_tokens = await asyncio.wait_for(
             parse_job_description(
                 client=client,
                 jd=request.job_description,
@@ -65,6 +65,12 @@ async def parse_jd(request: ParseJDRequest):
             ),
             timeout=35,
         )
+
+        return {
+            "result": result.model_dump(),
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
+        }
     except asyncio.TimeoutError:
         raise HTTPException(
             status_code=status.HTTP_504_GATEWAY_TIMEOUT,
@@ -89,7 +95,7 @@ async def match_cv(request: MatchCVRequest):
     cv_entries = CVCompiler.to_entries(cv)
 
     try:
-        result = await asyncio.wait_for(
+        result, input_tokens, output_tokens  = await asyncio.wait_for(
             match_cv_entries(
                 client=client,
                 parsed_jd=request.parsed_jd,
@@ -99,8 +105,11 @@ async def match_cv(request: MatchCVRequest):
             timeout=35,
         )
 
-        return result.model_dump()
-
+        return {
+            "result": result.model_dump(),
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
+        }
     except asyncio.TimeoutError:
         raise HTTPException(
             status_code=status.HTTP_504_GATEWAY_TIMEOUT,
