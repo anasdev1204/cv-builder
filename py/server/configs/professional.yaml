@@ -1,3 +1,5 @@
+# professional.yaml
+
 page:
   margins:
     top: 0.55
@@ -8,49 +10,95 @@ page:
 font:
   family: Arial
   size: 9.5
+  bold: false
+  italic: false
+  underline: false
+  color: "#000000"
+  character_spacing: 0
 
 header:
   alignment: center
 
   name:
+    family: Arial
     size: 20
     bold: true
     italic: false
+    underline: false
+    color: "#000000"
+    character_spacing: 0
 
   contact:
+    family: Arial
     size: 9
     bold: false
     italic: false
+    underline: false
+    color: "#000000"
+    character_spacing: 0
     separator: " | "
+
+  job_title:
+    family: Arial
+    size: 10.5
+    bold: true
+    italic: false
+    underline: false
+    color: "#000000"
+    character_spacing: 0
+
+  show_picture: false
+  picture_size: 1.0
+
+  space_before: 0
+  space_after: 8
+
+  show_divider: false
+  divider_thickness: 0.5
+  divider_color: "#000000"
 
 section:
   heading:
     size: 10.5
     bold: true
     italic: false
-    uppercase: false
+    uppercase: true
     underline: false
+    color: "#000000"
     space_before: 6
     space_after: 3
+    show_divider: false
+    divider_thickness: 0.5
+    divider_color: "#000000"
 
   space_before: 0
   space_after: 5
 
+  renderer:
+    renderer: paragraph
+
 entry:
   layout: stacked
   space_before: 3
+  space_after: 5
 
   title:
     family: Arial
     size: 9.5
     bold: true
     italic: false
+    underline: false
+    color: "#000000"
+    character_spacing: 0
 
   subtitle:
     family: Arial
     size: 9.5
     bold: false
     italic: false
+    underline: false
+    color: "#000000"
+    character_spacing: 0
 
   subtitle_separator: " — "
 
@@ -58,37 +106,87 @@ entry:
     size: 8.5
     bold: false
     italic: true
+    color: "#000000"
     separator: " – "
+    format: year
     space_before: 0
     space_after: 1
+    show_start_date: true
+    show_end_date: true
+    current_label: "Present"
 
   bullets:
+    symbol: "•"
     size: 9.5
     indent: 0.2
     hanging_indent: null
     space_before: 0
     space_after: 3
+    line_spacing: 1.0
+    alignment: left
 
   show_dates: true
   show_bullets: true
+  show_subtitle: true
+
+  title_position: left
+  date_position: right
 
 list:
   separator: " • "
   size: 9.5
 
+  font:
+    family: Arial
+    size: 9.5
+    bold: false
+    italic: false
+    underline: false
+    color: "#000000"
+    character_spacing: 0
+
+  space_before: 0
+  space_after: 3
+  alignment: left
+
 sections:
 
   summary:
     renderer: paragraph
+    entry: null
+    separator: null
+    show_heading: true
+    space_before: null
+    space_after: null
 
   experience:
     renderer: entries
+    entry: null
+    separator: null
+    show_heading: true
+    space_before: null
+    space_after: null
 
   education:
     renderer: entries
+    entry: null
+    separator: null
+    show_heading: true
+    space_before: null
+    space_after: null
 
   skills:
     renderer: inline_list
+    entry: null
+    separator: " • "
+    show_heading: true
+    space_before: null
+    space_after: null
 
   languages:
     renderer: inline_list
+    entry: null
+    separator: " • "
+    show_heading: true
+    space_before: null
+    space_after: null

@@ -1,93 +1,302 @@
+# modern.yaml
+
 page:
   margins:
-    top: 0.4
-    bottom: 0.4
-    left: 0.5
-    right: 0.5
+    top: 0.5
+    bottom: 0.5
+    left: 0.6
+    right: 0.6
 
 font:
-  family: Calibri
-  size: 10
+  family: Arial
+  size: 9.5
+  bold: false
+  italic: false
+  underline: false
+  color: "#000000"
+  character_spacing: 0
 
 header:
   alignment: left
 
   name:
+    family: Arial
     size: 24
     bold: true
     italic: false
+    underline: false
+    color: "#000000"
+    character_spacing: 0
 
   contact:
+    family: Arial
     size: 9
     bold: false
     italic: false
-    separator: " · "
+    underline: false
+    color: "#000000"
+    character_spacing: 0
+    separator: "  |  "
+
+  job_title:
+    family: Arial
+    size: 10.5
+    bold: true
+    italic: false
+    underline: false
+    color: "#000000"
+    character_spacing: 0
+
+  show_picture: false
+  picture_size: 1.0
+
+  space_before: 0
+  space_after: 10
+
+  show_divider: true
+  divider_thickness: 1
+  divider_color: "#000000"
 
 section:
   heading:
-    size: 12
+    size: 10
     bold: true
     italic: false
     uppercase: true
-    underline: true
-    space_before: 10
-    space_after: 5
+    underline: false
+    color: "#000000"
+    space_before: 7
+    space_after: 4
+    show_divider: false
+    divider_thickness: 0.5
+    divider_color: "#000000"
 
   space_before: 0
   space_after: 6
 
+  renderer:
+    renderer: paragraph
+
 entry:
   layout: compact
-  space_before: 5
+  space_before: 4
+  space_after: 6
 
   title:
-    family: Calibri
+    family: Arial
     size: 10
     bold: true
     italic: false
+    underline: false
+    color: "#000000"
+    character_spacing: 0
 
   subtitle:
-    family: Calibri
-    size: 10
+    family: Arial
+    size: 9.5
     bold: false
     italic: true
+    underline: false
+    color: "#000000"
+    character_spacing: 0
 
-  subtitle_separator: " | "
+  subtitle_separator: "  ·  "
 
   dates:
-    size: 9
+    size: 8.5
     bold: false
     italic: false
-    separator: " — "
+    color: "#000000"
+    separator: "  |  "
+    format: month_year
     space_before: 0
-    space_after: 2
+    space_after: 1
+    show_start_date: true
+    show_end_date: true
+    current_label: "Present"
 
   bullets:
-    size: 10
-    indent: 0.25
+    symbol: "–"
+    size: 9.5
+    indent: 0.2
     hanging_indent: 0.15
     space_before: 0
     space_after: 2
+    line_spacing: 1.0
+    alignment: left
 
   show_dates: true
   show_bullets: true
+  show_subtitle: true
+
+  title_position: left
+  date_position: right
 
 list:
-  separator: " · "
-  size: 10
+  separator: "  ·  "
+  size: 9.5
+
+  font:
+    family: Arial
+    size: 9.5
+    bold: false
+    italic: false
+    underline: false
+    color: "#000000"
+    character_spacing: 0
+
+  space_before: 0
+  space_after: 3
+  alignment: left
 
 sections:
+
   summary:
     renderer: paragraph
+    entry: null
+    separator: null
+    show_heading: true
+    space_before: null
+    space_after: null
 
   experience:
     renderer: entries
 
+    entry:
+      layout: compact
+      space_before: 3
+      space_after: 5
+
+      title:
+        family: Arial
+        size: 10
+        bold: true
+        italic: false
+        underline: false
+        color: "#000000"
+        character_spacing: 0
+
+      subtitle:
+        family: Arial
+        size: 9.5
+        bold: false
+        italic: true
+        underline: false
+        color: "#000000"
+        character_spacing: 0
+
+      subtitle_separator: "  ·  "
+
+      dates:
+        size: 8.5
+        bold: false
+        italic: false
+        color: "#000000"
+        separator: "  |  "
+        format: month_year
+        space_before: 0
+        space_after: 1
+        show_start_date: true
+        show_end_date: true
+        current_label: "Present"
+
+      bullets:
+        symbol: "–"
+        size: 9.5
+        indent: 0.2
+        hanging_indent: 0.15
+        space_before: 0
+        space_after: 2
+        line_spacing: 1.0
+        alignment: left
+
+      show_dates: true
+      show_bullets: true
+      show_subtitle: true
+
+      title_position: left
+      date_position: right
+
+    separator: null
+    show_heading: true
+    space_before: null
+    space_after: null
+
   education:
     renderer: entries
 
+    entry:
+      layout: compact
+      space_before: 3
+      space_after: 4
+
+      title:
+        family: Arial
+        size: 9.5
+        bold: true
+        italic: false
+        underline: false
+        color: "#000000"
+        character_spacing: 0
+
+      subtitle:
+        family: Arial
+        size: 9
+        bold: false
+        italic: false
+        underline: false
+        color: "#000000"
+        character_spacing: 0
+
+      subtitle_separator: " — "
+
+      dates:
+        size: 8.5
+        bold: false
+        italic: false
+        color: "#000000"
+        separator: "  |  "
+        format: year
+        space_before: 0
+        space_after: 1
+        show_start_date: true
+        show_end_date: true
+        current_label: "Present"
+
+      bullets:
+        symbol: "–"
+        size: 9
+        indent: 0.2
+        hanging_indent: null
+        space_before: 0
+        space_after: 2
+        line_spacing: 1.0
+        alignment: left
+
+      show_dates: true
+      show_bullets: false
+      show_subtitle: true
+
+      title_position: left
+      date_position: right
+
+    separator: null
+    show_heading: true
+    space_before: null
+    space_after: null
+
   skills:
     renderer: inline_list
+    entry: null
+    separator: "  ·  "
+    show_heading: true
+    space_before: null
+    space_after: null
 
   languages:
     renderer: inline_list
+    entry: null
+    separator: "  ·  "
+    show_heading: true
+    space_before: null
+    space_after: null

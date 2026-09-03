@@ -1,13 +1,14 @@
 from pathlib import Path
-from tempfile import TemporaryDirectory
 import subprocess
 from turtle import st
+from docx.oxml import OxmlElement
 from fastapi.responses import FileResponse
 
 from docx import Document
-from docx.shared import Pt, Inches
+from docx.shared import Pt, Inches, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.section import WD_SECTION
+from docx.oxml.ns import qn
 
 from models.cv import CV, CvSections, SectionEntry, SectionMeta, UserData
 
@@ -16,6 +17,9 @@ from pathlib import Path
 import yaml
 
 from models.template import (
+    BulletConfig,
+    DateConfig,
+    FontConfig,
     TemplateConfig,
     SectionRendererConfig,
     EntryConfig
@@ -182,6 +186,10 @@ class CVCompiler:
 
         normal.font.bold = config.font.bold
         normal.font.italic = config.font.italic
+        normal.font.underline = config.font.underline
+        normal.font.color.rgb = config.font.color
+        normal.font.character_spacing = Pt(config.font.character_spacing
+        )
 
     def _add_header(
         self,
@@ -190,49 +198,47 @@ class CVCompiler:
         job_title: str,
         config: TemplateConfig,
     ):
-
         alignment_map = {
             "left": WD_ALIGN_PARAGRAPH.LEFT,
             "center": WD_ALIGN_PARAGRAPH.CENTER,
             "right": WD_ALIGN_PARAGRAPH.RIGHT,
         }
 
-        alignment = alignment_map[
-            config.header.alignment
-        ]
+        header_config = config.header
+        alignment = alignment_map[header_config.alignment]
 
-        if user_data.picture:
+        if user_data.picture and header_config.show_picture:
             try:
                 document.add_picture(
                     user_data.picture,
-                    width=Inches(1.0)
+                    width=Inches(header_config.picture_size),
                 )
-                last_paragraph = document.paragraphs[-1] 
-                last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                document.paragraphs[-1].alignment = alignment
             except Exception as e:
                 print(f"Error adding picture: {e}")
 
-
         paragraph = document.add_paragraph()
-
         paragraph.alignment = alignment
+        paragraph.paragraph_format.space_before = Pt(
+            header_config.space_before
+        )
+        paragraph.paragraph_format.space_after = Pt(0)
 
-        name_config = config.header.name
+        self._apply_font(
+            paragraph.add_run(user_data.name),
+            header_config.name,
+        )
 
-        name = paragraph.add_run(user_data.name)
+        if job_title:
+            paragraph = document.add_paragraph()
+            paragraph.alignment = alignment
+            paragraph.paragraph_format.space_before = Pt(0)
+            paragraph.paragraph_format.space_after = Pt(0)
 
-        name.bold = name_config.bold
-        name.italic = name_config.italic
-        name.font.size = Pt(name_config.size)
-
-        job_title_paragraph = document.add_paragraph(job_title)
-
-        job_title_paragraph.alignment = alignment
-        
-        job_title_paragraph_run = job_title_paragraph.runs[0]
-        job_title_paragraph_run.bold = config.header.name.bold
-        job_title_paragraph_run.italic = config.header.name.italic
-        job_title_paragraph_run.font.size = Pt(config.header.name.size)
+            self._apply_font(
+                paragraph.add_run(job_title),
+                header_config.job_title,
+            )
 
         contact = []
 
@@ -244,8 +250,7 @@ class CVCompiler:
 
         if user_data.address:
             contact.append(
-                f"{user_data.address.city}, "
-                f"{user_data.address.country}"
+                f"{user_data.address.city}, {user_data.address.country}"
             )
 
         if user_data.linkedin:
@@ -255,20 +260,41 @@ class CVCompiler:
             contact.append(user_data.portfolio)
 
         if contact:
-
             paragraph = document.add_paragraph()
-
             paragraph.alignment = alignment
-
-            contact_config = config.header.contact
-
-            run = paragraph.add_run(
-                contact_config.separator.join(contact)
+            paragraph.paragraph_format.space_before = Pt(0)
+            paragraph.paragraph_format.space_after = Pt(
+                header_config.space_after
             )
 
-            run.bold = contact_config.bold
-            run.italic = contact_config.italic
-            run.font.size = Pt(contact_config.size)
+            self._apply_font(
+                paragraph.add_run(
+                    header_config.contact.separator.join(contact)
+                ),
+                header_config.contact,
+            )
+
+        if header_config.show_divider:
+            paragraph = document.add_paragraph()
+            paragraph.paragraph_format.space_before = Pt(0)
+            paragraph.paragraph_format.space_after = Pt(0)
+
+            p = paragraph._p
+            p_pr = p.get_or_add_pPr()
+
+            p_bdr = OxmlElement("w:pBdr")
+            bottom = OxmlElement("w:bottom")
+
+            bottom.set(qn("w:val"), "single")
+            bottom.set(
+                qn("w:sz"),
+                str(int(header_config.divider_thickness * 8)),
+            )
+            bottom.set(qn("w:space"), "1")
+            bottom.set(qn("w:color"), header_config.divider_color.lstrip("#"))
+
+            p_bdr.append(bottom)
+            p_pr.append(p_bdr)
 
     def _render_all_sections(
         self,
@@ -400,29 +426,53 @@ class CVCompiler:
             raise ValueError(
                 f"Unknown renderer: {renderer}"
             )
-    
+
     def _add_str(
         self,
         document: Document,
         title: str,
         content: str,
         config: TemplateConfig,
+        section_config: SectionRendererConfig,
     ):
+        if not content:
+            return
 
-        self._add_heading(
-            document,
-            title,
-            config,
-        )
+        if section_config.show_heading:
+            self._add_heading(
+                document,
+                title,
+                config,
+                section_config,
+            )
 
         paragraph = document.add_paragraph(content)
 
-        paragraph.paragraph_format.space_before = Pt(
-            config.section.space_before
+        space_before = (
+            section_config.space_before
+            if section_config.space_before is not None
+            else config.section.space_before
         )
 
-        paragraph.paragraph_format.space_after = Pt(
-            config.section.space_after
+        space_after = (
+            section_config.space_after
+            if section_config.space_after is not None
+            else config.section.space_after
+        )
+
+        paragraph.paragraph_format.space_before = Pt(space_before)
+        paragraph.paragraph_format.space_after = Pt(space_after)
+
+        run = paragraph.runs[0]
+        font_config = config.font
+
+        run.font.name = font_config.family
+        run.font.size = Pt(font_config.size)
+        run.bold = font_config.bold
+        run.italic = font_config.italic
+        run.underline = font_config.underline
+        run.font.color.rgb = RGBColor.from_string(
+            font_config.color.lstrip("#")
         )
 
     def _add_bp(
@@ -431,17 +481,26 @@ class CVCompiler:
         title: str,
         content: list[SectionEntry],
         config: TemplateConfig,
-        entry_config: EntryConfig,
+        section_config: SectionRendererConfig,
     ):
+        if not content:
+            return
 
-        self._add_heading(
-            document,
-            title,
-            config,
+        if section_config.show_heading:
+            self._add_heading(
+                document,
+                title,
+                config,
+                section_config,
+            )
+
+        entry_config = (
+            section_config.entry
+            if section_config.entry is not None
+            else config.entry
         )
 
         for entry in content:
-
             self._add_entry(
                 document,
                 entry,
@@ -454,33 +513,53 @@ class CVCompiler:
         title: str,
         content: list[str],
         config: TemplateConfig,
+        section_config: SectionRendererConfig,
     ):
-
         if not content:
             return
 
-        self._add_heading(
-            document,
-            title,
-            config,
-        )
+        if section_config.show_heading:
+            self._add_heading(
+                document,
+                title,
+                config,
+                section_config,
+            )
 
         paragraph = document.add_paragraph()
 
-        paragraph.paragraph_format.space_before = Pt(
-            config.section.space_before
+        space_before = (
+            section_config.space_before
+            if section_config.space_before is not None
+            else config.list.space_before
         )
 
-        paragraph.paragraph_format.space_after = Pt(
-            config.section.space_after
+        space_after = (
+            section_config.space_after
+            if section_config.space_after is not None
+            else config.list.space_after
         )
 
-        run = paragraph.add_run(
-            config.list.separator.join(content)
+        paragraph.paragraph_format.space_before = Pt(space_before)
+        paragraph.paragraph_format.space_after = Pt(space_after)
+
+        separator = (
+            section_config.separator
+            if section_config.separator is not None
+            else config.list.separator
         )
 
-        run.font.size = Pt(
-            config.list.size
+        run = paragraph.add_run(separator.join(content))
+
+        font_config = config.list.font
+
+        run.font.name = font_config.family
+        run.font.size = Pt(config.list.size)
+        run.bold = font_config.bold
+        run.italic = font_config.italic
+        run.underline = font_config.underline
+        run.font.color.rgb = RGBColor.from_string(
+            font_config.color.lstrip("#")
         )
 
     def _add_heading(
@@ -488,7 +567,13 @@ class CVCompiler:
         document: Document,
         title: str,
         config: TemplateConfig,
+        section_config: SectionRendererConfig | None = None,
     ):
+        if (
+            section_config is not None
+            and not section_config.show_heading
+        ):
+            return
 
         heading = config.section.heading
 
@@ -507,11 +592,39 @@ class CVCompiler:
 
         run = paragraph.add_run(title)
 
+        run.font.name = config.font.family
         run.bold = heading.bold
         run.italic = heading.italic
         run.underline = heading.underline
-
         run.font.size = Pt(heading.size)
+        run.font.color.rgb = RGBColor.from_string(
+            heading.color.lstrip("#")
+        )
+
+        if heading.show_divider:
+            paragraph.paragraph_format.keep_with_next = True
+
+            border = paragraph._p.get_or_add_pPr().get_or_add_pBdr()
+            bottom = OxmlElement("w:bottom")
+
+            bottom.set(
+                qn("w:val"),
+                "single",
+            )
+            bottom.set(
+                qn("w:sz"),
+                str(int(heading.divider_thickness * 8)),
+            )
+            bottom.set(
+                qn("w:space"),
+                "1",
+            )
+            bottom.set(
+                qn("w:color"),
+                heading.divider_color.lstrip("#"),
+            )
+
+            border.append(bottom)
 
     def _add_entry(
         self,
@@ -519,23 +632,52 @@ class CVCompiler:
         entry: SectionEntry,
         config: EntryConfig,
     ):
+        if config.layout == "stacked":
+            self._add_stacked_entry(
+                document,
+                entry,
+                config,
+            )
 
+        elif config.layout == "compact":
+            self._add_compact_entry(
+                document,
+                entry,
+                config,
+            )
+
+        elif config.layout == "inline":
+            self._add_inline_entry(
+                document,
+                entry,
+                config,
+            )
+
+    def _add_stacked_entry(
+        self,
+        document: Document,
+        entry: SectionEntry,
+        config: EntryConfig,
+    ):
         paragraph = document.add_paragraph()
 
         paragraph.paragraph_format.space_before = Pt(
             config.space_before
+        )
+        paragraph.paragraph_format.space_after = Pt(
+            config.space_after
         )
 
         title_config = config.title
 
         title = paragraph.add_run(entry.title)
 
-        title.bold = title_config.bold
-        title.italic = title_config.italic
-        title.font.size = Pt(title_config.size)
+        self._apply_font(
+            title,
+            title_config,
+        )
 
-        if entry.subtitle:
-
+        if config.show_subtitle and entry.subtitle:
             subtitle_config = config.subtitle
 
             subtitle = paragraph.add_run(
@@ -543,79 +685,276 @@ class CVCompiler:
                 f"{entry.subtitle}"
             )
 
-            subtitle.bold = subtitle_config.bold
-            subtitle.italic = subtitle_config.italic
-            subtitle.font.size = Pt(
-                subtitle_config.size
+            self._apply_font(
+                subtitle,
+                subtitle_config,
             )
 
         if config.show_dates:
-
-            dates = []
-
-            if entry.start_date:
-                dates.append(entry.start_date)
-
-            if entry.end_date:
-                dates.append(entry.end_date)
-
-            if dates:
-
-                date_config = config.dates
-
-                paragraph = document.add_paragraph()
-
-                paragraph.paragraph_format.space_before = Pt(
-                    date_config.space_before
-                )
-
-                paragraph.paragraph_format.space_after = Pt(
-                    date_config.space_after
-                )
-
-                run = paragraph.add_run(
-                    date_config.separator.join(dates)
-                )
-
-                run.bold = date_config.bold
-                run.italic = date_config.italic
-                run.font.size = Pt(
-                    date_config.size
-                )
+            self._add_dates(
+                document,
+                entry,
+                config,
+            )
 
         if config.show_bullets:
+            self._add_bullets(
+                document,
+                entry.bullet_points,
+                config.bullets,
+            )
 
-            bullet_config = config.bullets
+    def _add_compact_entry(
+        self,
+        document: Document,
+        entry: SectionEntry,
+        config: EntryConfig,
+    ):
+        paragraph = document.add_paragraph()
 
-            for bullet in entry.bullet_points:
+        paragraph.paragraph_format.space_before = Pt(
+            config.space_before
+        )
+        paragraph.paragraph_format.space_after = Pt(
+            config.space_after
+        )
 
-                paragraph = document.add_paragraph(
-                    style="List Bullet"
+        title_config = config.title
+
+        title = paragraph.add_run(entry.title)
+
+        self._apply_font(
+            title,
+            title_config,
+        )
+
+        if config.show_subtitle and entry.subtitle:
+            subtitle = paragraph.add_run(
+                f"{config.subtitle_separator}"
+                f"{entry.subtitle}"
+            )
+
+            self._apply_font(
+                subtitle,
+                config.subtitle,
+            )
+
+        if config.show_dates and self._has_dates(entry):
+            dates = self._format_dates(entry, config.dates)
+
+            date_run = paragraph.add_run(
+                f"    {dates}"
+            )
+
+            self._apply_font(
+                date_run,
+                config.dates,
+            )
+
+        if config.show_bullets:
+            self._add_bullets(
+                document,
+                entry.bullet_points,
+                config.bullets,
+            )
+
+    def _add_inline_entry(
+        self,
+        document: Document,
+        entry: SectionEntry,
+        config: EntryConfig,
+    ):
+        paragraph = document.add_paragraph()
+
+        paragraph.paragraph_format.space_before = Pt(
+            config.space_before
+        )
+        paragraph.paragraph_format.space_after = Pt(
+            config.space_after
+        )
+
+        title = paragraph.add_run(entry.title)
+
+        self._apply_font(
+            title,
+            config.title,
+        )
+
+        if config.show_subtitle and entry.subtitle:
+            subtitle = paragraph.add_run(
+                f"{config.subtitle_separator}"
+                f"{entry.subtitle}"
+            )
+
+            self._apply_font(
+                subtitle,
+                config.subtitle,
+            )
+
+        if config.show_dates and self._has_dates(entry):
+            dates = paragraph.add_run(
+                f" {config.dates.separator}"
+                f"{self._format_dates(entry, config.dates)}"
+            )
+
+            self._apply_font(
+                dates,
+                config.dates,
+            )
+
+        if config.show_bullets:
+            self._add_bullets(
+                document,
+                entry.bullet_points,
+                config.bullets,
+            )
+
+    def _add_dates(
+        self,
+        document: Document,
+        entry: SectionEntry,
+        config: EntryConfig,
+    ):
+        if not self._has_dates(entry):
+            return
+
+        date_config = config.dates
+
+        paragraph = document.add_paragraph()
+
+        paragraph.paragraph_format.space_before = Pt(
+            date_config.space_before
+        )
+        paragraph.paragraph_format.space_after = Pt(
+            date_config.space_after
+        )
+
+        run = paragraph.add_run(
+            self._format_dates(
+                entry,
+                date_config,
+            )
+        )
+
+        self._apply_font(
+            run,
+            date_config,
+        )
+
+    def _add_bullets(
+        self,
+        document: Document,
+        bullets: list[str],
+        config: BulletConfig,
+    ):
+        for bullet in bullets:
+            paragraph = document.add_paragraph()
+
+            paragraph.paragraph_format.left_indent = Inches(
+                config.indent
+            )
+
+            if config.hanging_indent is not None:
+                paragraph.paragraph_format.first_line_indent = (
+                    Inches(-config.hanging_indent)
                 )
 
-                paragraph.paragraph_format.left_indent = (
-                    Inches(bullet_config.indent)
+            paragraph.paragraph_format.space_before = Pt(
+                config.space_before
+            )
+
+            paragraph.paragraph_format.space_after = Pt(
+                config.space_after
+            )
+
+            paragraph.paragraph_format.line_spacing = (
+                config.line_spacing
+            )
+
+            if config.alignment == "justify":
+                paragraph.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+            else:
+                paragraph.alignment = WD_ALIGN_PARAGRAPH.LEFT
+
+            run = paragraph.add_run(
+                f"{config.symbol} {bullet}"
+            )
+
+            run.font.name = "Arial"
+            run.font.size = Pt(config.size)
+
+    def _apply_font(
+        self,
+        run,
+        config: FontConfig,
+    ):
+        run.font.name = config.family
+        run.font.size = Pt(config.size)
+        run.bold = config.bold
+        run.italic = config.italic
+        run.underline = config.underline
+        run.font.color.rgb = RGBColor.from_string(
+            config.color.lstrip("#")
+        )
+
+    def _has_dates(
+        self,
+        entry: SectionEntry,
+    ) -> bool:
+        return bool(
+            entry.start_date or entry.end_date
+        )
+
+    def _format_dates(
+        self,
+        entry: SectionEntry,
+        config: DateConfig,
+    ) -> str:
+        dates = []
+
+        if config.show_start_date and entry.start_date:
+            dates.append(
+                self._format_date(
+                    entry.start_date,
+                    config.format,
                 )
+            )
 
-                if bullet_config.hanging_indent is not None:
-
-                    paragraph.paragraph_format.first_line_indent = (
-                        Inches(-bullet_config.hanging_indent)
-                    )
-
-                paragraph.paragraph_format.space_before = Pt(
-                    bullet_config.space_before
+        if config.show_end_date and entry.end_date:
+            dates.append(
+                self._format_date(
+                    entry.end_date,
+                    config.format,
                 )
+            )
 
-                paragraph.paragraph_format.space_after = Pt(
-                    bullet_config.space_after
-                )
+        if (
+            config.show_end_date
+            and entry.start_date
+            and not entry.end_date
+        ):
+            dates.append(config.current_label)
 
-                run = paragraph.add_run(bullet)
+        return config.separator.join(dates)
 
-                run.font.size = Pt(
-                    bullet_config.size
-                )
+    def _format_date(
+        self,
+        value: str,
+        format: str,
+    ) -> str:
+        if format == "year":
+            return value[:4]
+
+        if format == "month_year":
+            if len(value) >= 7:
+                return value[:7]
+
+            return value
+
+        if format == "full_date":
+            return value
+
+        return value
 
     def _convert_to_pdf(
         self,
