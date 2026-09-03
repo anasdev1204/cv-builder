@@ -1,15 +1,12 @@
 from dotenv import load_dotenv
-from openai import OpenAI
-
+from openai import AsyncOpenAI
 from models.jd import ParsedJD
 
 load_dotenv()
 
 
-client = OpenAI()
-
-async def parse_job_description(jd: str, model: str) -> tuple[ParsedJD, int, int]:
-    response = client.responses.create(
+async def parse_job_description(client: AsyncOpenAI, jd: str, model: str) -> tuple[ParsedJD, int, int]:
+    response = await client.responses.create(
         model=model,
         text={
             "format": {

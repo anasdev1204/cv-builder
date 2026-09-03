@@ -2,6 +2,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import subprocess
 from turtle import st
+from fastapi.responses import FileResponse
 
 from docx import Document
 from docx.shared import Pt, Inches
@@ -49,8 +50,9 @@ class TemplateLoader:
 class CVCompiler:
     def __init__(
         self,
-        output_directory: str = "generated",
+        output_directory: str = "test_output",
         config_directory: str = "configs",
+        template_config: TemplateConfig | None = None,
     ):
         self.output_directory = Path(output_directory)
         self.output_directory.mkdir(
@@ -62,37 +64,52 @@ class CVCompiler:
             config_directory
         )
 
+        self.template_config = template_config
+
     async def compile(
         self,
         cv: CV,
         template: str = "professional",
         output_format: str = "pdf",
-        selected_version: str = "en"
-    ) -> str:
-
+        selected_version: str = "en",
+        job_title: str = "Unknown",
+        local: bool = True,
+    ):
         docx_path = self._compile_docx(
             cv=cv,
+            job_title=job_title,
             template=template,
-            selected_version=selected_version
+            selected_version=selected_version,
         )
 
         if output_format == "docx":
-            return str(docx_path)
+            output_path = docx_path
 
-        if output_format == "pdf":
-            return self._convert_to_pdf(docx_path)
+        elif output_format == "pdf":
+            output_path = self._convert_to_pdf(docx_path)
 
-        raise ValueError(
-            f"Unsupported format: {output_format}"
-        )
+        else:
+            raise ValueError(
+                f"Unsupported format: {output_format}"
+            )
+
+        if local:
+            return str(output_path)
+
+        return self._compile_doc_url(output_path)
 
     def _compile_docx(
         self,
         cv: CV,
+        job_title: str,
         template: str,
         selected_version: str,
     ) -> Path:
-        config = self.template_loader.load(template)
+        
+        if self.template_config is not None:
+            config = self.template_config
+        else:
+            config = self.template_loader.load(template)
 
         document = Document()
 
@@ -118,6 +135,7 @@ class CVCompiler:
         self._add_header(
             document,
             user_data,
+            job_title,
             config,
         )
 
@@ -169,6 +187,7 @@ class CVCompiler:
         self,
         document: Document,
         user_data: UserData,
+        job_title: str,
         config: TemplateConfig,
     ):
 
@@ -205,6 +224,15 @@ class CVCompiler:
         name.bold = name_config.bold
         name.italic = name_config.italic
         name.font.size = Pt(name_config.size)
+
+        job_title_paragraph = document.add_paragraph(job_title)
+
+        job_title_paragraph.alignment = alignment
+        
+        job_title_paragraph_run = job_title_paragraph.runs[0]
+        job_title_paragraph_run.bold = config.header.name.bold
+        job_title_paragraph_run.italic = config.header.name.italic
+        job_title_paragraph_run.font.size = Pt(config.header.name.size)
 
         contact = []
 
@@ -612,6 +640,20 @@ class CVCompiler:
         pdf_path = docx_path.with_suffix(".pdf")
 
         return str(pdf_path)
+
+    def _compile_doc_url(self, path: Path) -> FileResponse:
+        if not path.exists():
+            raise FileNotFoundError(f"Compiled file not found: {path}")
+
+        return FileResponse(
+            path=path,
+            filename=path.name,
+            media_type=(
+                "application/pdf"
+                if path.suffix.lower() == ".pdf"
+                else "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ),
+        )
 
     @staticmethod
     def to_entries(cv: CV, selected_version: str) -> list[str]:

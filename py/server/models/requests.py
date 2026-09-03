@@ -1,49 +1,27 @@
-from typing import Literal
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from models.cv import CV
+from models.jd import ParsedJD
+from models.template import TemplateConfig
 
-from .cv import CV
+class ParseJDRequest(BaseModel):
+    job_description: str = Field(..., min_length=20, max_length=50_000)
+    openai_api_key: str = Field(..., min_length=20)
+    model: str = Field(..., min_length=1, max_length=100)
+
+
+class MatchCVRequest(BaseModel):
+    parsed_jd: ParsedJD
+    cv_raw: dict
+    openai_api_key: str = Field(..., min_length=20)
+    model: str = Field(..., min_length=1, max_length=100)
 
 
 class CompileCVRequest(BaseModel):
-    user_id: str
+    cv_data: dict
+    job_title: str = Field(..., min_length=1, max_length=100)
+    template_name: str = Field(..., min_length=1, max_length=100)
+    template_config: TemplateConfig | None = None
+    output_format: str = Field(..., min_length=1, max_length=20)
 
-    format: Literal["pdf", "docx"] = "pdf"
-
-    template: str = "professional"
-
-    cv: CV | None = None
-
-
-class CompileCVResponse(BaseModel):
-    success: bool
-    format: str
-    file_url: str | None = None
-    file_path: str | None = None
-
-
-class JobDescriptionRequest(BaseModel):
-    job_description: str
-
-
-class JobKeyword(BaseModel):
-    keyword: str
-    category: str
-    importance: float
-    occurrences: int = 0
-
-
-class JobDescriptionAnalysis(BaseModel):
-    keywords: list[JobKeyword]
-    skills: list[JobKeyword]
-    summary: str | None = None
-
-
-class SuggestCVRequest(BaseModel):
-    user_id: str
-    job_analysis: JobDescriptionAnalysis
-
-
-class EvaluateCVRequest(BaseModel):
-    user_id: str
-    job_analysis: JobDescriptionAnalysis
-    cv: CV | None = None
+class ErrorResponse(BaseModel):
+    detail: str

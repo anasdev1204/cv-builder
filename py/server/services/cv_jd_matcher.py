@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from openai import OpenAI
+from openai import AsyncOpenAI
 
 from models.cv import CV
 from models.jd import ParsedJD
@@ -7,9 +7,8 @@ from models.cvmatch import CVMatchResult
 
 load_dotenv()
 
-client = OpenAI()
-
 async def match_cv_entries(
+    client: AsyncOpenAI,
     parsed_jd: ParsedJD,
     cv_entries: list[str],
     model: str
@@ -53,7 +52,7 @@ CV entries:
 {chr(10).join(f"{i}: {entry}" for i, entry in enumerate(cv_entries))}
 """
 
-    response = client.responses.create(
+    response = await client.responses.create(
         model=model,
         text={
             "format": {
