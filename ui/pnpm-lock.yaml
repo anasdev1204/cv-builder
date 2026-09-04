@@ -8,12 +8,18 @@ importers:
 
   .:
     dependencies:
+      dexie:
+        specifier: ^4.4.5
+        version: 4.4.5
       react:
         specifier: ^19.2.8
         version: 19.2.8
       react-dom:
         specifier: ^19.2.8
         version: 19.2.8(react@19.2.8)
+      uuid:
+        specifier: ^14.0.2
+        version: 14.0.2
     devDependencies:
       '@eslint/js':
         specifier: ^10.0.1
@@ -447,6 +453,9 @@ packages:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
 
+  dexie@4.4.5:
+    resolution: {integrity: sha512-wWCHdihT3dmlUSuNhn5mMZDWSpG0suxjAni7YjjiZdzabZcKmy3uNZGZ7AeYYXBoLbpSXX35fikPLkPC44Osiw==}
+
   electron-to-chromium@1.5.422:
     resolution: {integrity: sha512-UvA/32XqrLDdZSn7Jllo1AYNcWji/G0d5M0GTViE7KoGBiMunw3a34Sb2KO4ZZyrSEhqsxFoVhWWJshdyfKqJA==}
 
@@ -829,6 +838,10 @@ packages:
 
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
+
+  uuid@14.0.2:
+    resolution: {integrity: sha512-xZe/16rV4aa+HGSOCiY2YeLT1OybRLrrkL/Rqaq7p7GMVXjFh+6wN4oMYgjFmnSnhY8t6Xpdl2l9qmnHYuMHwQ==}
+    hasBin: true
 
   vite@8.2.2:
     resolution: {integrity: sha512-cFKLV/PRgAUlIRm5WjMjJ86jrftzpqcgH+Us+DS8mI3CDNiH30Whrz8uHL3+MOLPAgqbMBAqWdAHAphOAM+z/Q==}
@@ -1281,6 +1294,8 @@ snapshots:
 
   detect-libc@2.1.2: {}
 
+  dexie@4.4.5: {}
+
   electron-to-chromium@1.5.422: {}
 
   escalade@3.2.0: {}
@@ -1627,6 +1642,8 @@ snapshots:
   uri-js@4.4.1:
     dependencies:
       punycode: 2.3.1
+
+  uuid@14.0.2: {}
 
   vite@8.2.2(@types/node@24.13.3):
     dependencies:
