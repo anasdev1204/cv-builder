@@ -1,5 +1,5 @@
 import { apiRequest } from "./client";
-import type { CVRaw, TemplateConfig } from "../types";
+import type { CVRaw, TemplateConfig } from "@/types";
 
 export interface CompileCVRequest {
     cv_data: CVRaw;

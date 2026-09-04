@@ -1,5 +1,5 @@
 import { apiRequest } from "./client";
-import type { ParsedJD } from "../types";
+import type { ParsedJD } from "@/types";
 
 export interface ParseJDRequest {
     openai_api_key: string;

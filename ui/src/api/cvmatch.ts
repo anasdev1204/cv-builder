@@ -1,5 +1,5 @@
 import { apiRequest } from "./client";
-import type { CVEntryMatch, CVRaw, ParsedJD } from "../types";
+import type { CVEntryMatch, CVRaw, ParsedJD } from "@/types";
 
 export interface CVMatchRequest {
   parsed_jd: ParsedJD
