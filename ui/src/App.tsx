@@ -1,5 +1,5 @@
 import { health } from "./api/health";
-import { useApiRequest } from "./hooks/useAPI";
+import { useAPI } from "./hooks/useAPI";
 
 function App() {
     const {
@@ -7,7 +7,7 @@ function App() {
         loading,
         error,
         execute: checkHealth,
-    } = useApiRequest(health);
+    } = useAPI(health);
 
 
     return (
