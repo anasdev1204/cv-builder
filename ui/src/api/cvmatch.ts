@@ -1,10 +1,9 @@
 import { apiRequest } from "./client";
-import type { CVEntryMatch, ParsedJD } from "../types";
+import type { CVEntryMatch, CVRaw, ParsedJD } from "../types";
 
 export interface CVMatchRequest {
   parsed_jd: ParsedJD
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  cv_raw: Record<string, any>
+  cv_raw: CVRaw
   openai_api_key: string
   selected_version: string
   chosen_model: string

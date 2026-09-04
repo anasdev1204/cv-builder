@@ -162,23 +162,17 @@ interface SectionConfig {
   renderer: SectionRendererConfig;
 }
 
-export interface TemplateConfig {
+export type TemplateConfig ={
   page: PageConfig;
-
   font: FontConfig;
-
   header: HeaderConfig;
-
   section: SectionConfig;
-
   entry: EntryConfig;
-
   list: ListConfig;
-
   sections: Record<string, SectionRendererConfig>;
 }
 
-export interface CVEntryMatch {
+export type CVEntryMatch = {
   cv_entry_index: number;
   matched_keywords: string[];
   matched_technical_skills: string[];
@@ -187,4 +181,43 @@ export interface CVEntryMatch {
   matched_qualifications: string[];
   matched_experience_requirements: string[];
   matched_domain_terms: string[];
+}
+
+interface Address {
+  country: string;
+  city: string;
+}
+interface UserData {
+  name: string;
+  email: string;
+  picture?: string | null;
+  phone_number?: string | null;
+  linkedin?: string | null;
+  portfolio?: string | null;
+  address?: Address | null;
+  other_details: Record<string, unknown>;
+}
+interface SectionEntry {
+  title: string;
+  subtitle: string;
+  start_date?: string | null;
+  end_date?: string | null;
+  bullet_points: string[];
+}
+interface SectionMeta {
+  title: string;
+  content: string | SectionEntry[] | string[];
+}
+interface CvSections {
+  summary: SectionMeta;
+  experience: SectionMeta;
+  education: SectionMeta;
+  languages: SectionMeta;
+  skills: SectionMeta;
+  other_sections: Record<string, SectionMeta>;
+}
+
+export type CVRaw = {
+  user_data: UserData;
+  sections: Record<string, CvSections>;
 }

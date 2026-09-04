@@ -1,9 +1,8 @@
 import { apiRequest } from "./client";
-import type { TemplateConfig } from "../types";
+import type { CVRaw, TemplateConfig } from "../types";
 
 export interface CompileCVRequest {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    cv_data: Record<string, any>;
+    cv_data: CVRaw;
     job_title: string;
     template_name: string;
     template_config: TemplateConfig | null;
