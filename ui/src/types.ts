@@ -183,11 +183,11 @@ export type CVEntryMatch = {
   matched_domain_terms: string[];
 }
 
-interface Address {
+export interface Address {
   country: string;
   city: string;
 }
-interface UserData {
+export interface UserData {
   name: string;
   email: string;
   picture?: string | null;
@@ -195,20 +195,19 @@ interface UserData {
   linkedin?: string | null;
   portfolio?: string | null;
   address?: Address | null;
-  other_details: Record<string, unknown>;
 }
-interface SectionEntry {
+export interface SectionEntry {
   title: string;
   subtitle: string;
   start_date?: string | null;
   end_date?: string | null;
   bullet_points: string[];
 }
-interface SectionMeta {
+export interface SectionMeta {
   title: string;
   content: string | SectionEntry[] | string[];
 }
-interface CvSections {
+export interface CvSections {
   summary: SectionMeta;
   experience: SectionMeta;
   education: SectionMeta;

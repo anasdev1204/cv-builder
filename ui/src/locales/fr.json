@@ -1,0 +1,21 @@
+{
+    "cv": {
+        "info": {
+            "expand": "e",
+            "content": "e"
+        },
+        "editor": {
+            "noCV": {
+                "title": "No CV yet",
+                "description": "You don't have a CV created yet. Create one to start building and editing your profile.",
+                "button": "Create New CV"
+            },
+            "nameInput": {
+                "placeholder": "Your name"
+            },
+            "emailInput": {
+                "placeholder": "Your email"
+            }
+        }
+    }
+}
