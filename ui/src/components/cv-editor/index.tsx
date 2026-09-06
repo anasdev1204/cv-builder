@@ -26,15 +26,15 @@ export default function CVEditor({ cv, onSave }: CVEditorProps) {
         if (!cv) {
             setCurrentCV({
                 user_data: {
-                    name: "",
-                    email: "",
+                    name: "name",
+                    email: "name@example.com",
                     picture: null,
                     phone_number: null,
                     linkedin: null,
                     portfolio: null,
                     address: {
-                        country: "",
-                        city: "",
+                        country: "france",
+                        city: "grenoble",
                     }
                 },
                 sections: {},

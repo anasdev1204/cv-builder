@@ -10,11 +10,38 @@
                 "description": "You don't have a CV created yet. Create one to start building and editing your profile.",
                 "button": "Create New CV"
             },
+            "form": {
+                "validationErrorTitle": "Please fix the following errors before submitting the form",
+                "validateButton": "Validate",
+                "editButton": "Edit"
+            },
             "nameInput": {
-                "placeholder": "Your name"
+                "placeholder": "Your name",
+                "validationError": "Name must be at least 2 characters"
             },
             "emailInput": {
-                "placeholder": "Your email"
+                "placeholder": "Your email",
+                "validationError": "Invalid email address"
+            },
+            "phoneNumberInput": {
+                "placeholder": "Your phone number",
+                "validationError": "Invalid phone number. Please enter a valid phone number with country code, use format: +1234567890"
+            },
+            "linkedinInput": {
+                "placeholder": "Your LinkedIn profile",
+                "validationError": "Invalid linkedin URL. Please enter a valid LinkedIn profile URL"
+            },
+            "portfolioInput": {
+                "placeholder": "Your portfolio",
+                "validationError": "Invalid URL"
+            },
+            "countryInput": {
+                "placeholder": "Your country",
+                "validationError": "Country must be at least 2 characters"
+            },
+            "cityInput": {
+                "placeholder": "Your city",
+                "validationError": "City must be at least 2 characters"
             }
         }
     }
