@@ -11,9 +11,14 @@
                 "button": "Create New CV"
             },
             "form": {
+                "userDataTitle": "User Data",
                 "validationErrorTitle": "Please fix the following errors before submitting the form",
                 "validateButton": "Validate",
-                "editButton": "Edit"
+                "versionDropdownLabel": "CV version",
+                "editButton": "Edit",
+                "addVersionButton": "Add Version",
+                "newVersionInputPlaceholder": "New version",
+                "addVersionCancelButton": "Cancel"
             },
             "nameInput": {
                 "placeholder": "Your name",

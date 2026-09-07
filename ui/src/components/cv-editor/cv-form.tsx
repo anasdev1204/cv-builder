@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Grid, Text } from "@mantine/core";
+import { Box, Button, Flex, Grid, NativeSelect, Text } from "@mantine/core";
 import ValidatableInput from "./validatable-input";
 import { useForm, type FormErrors } from "@mantine/form";
 import type { CVRaw } from "@/types";
@@ -10,9 +10,11 @@ type CVFormProps = {
     t: TFunction
     cv: CVRaw;
     version: string | null;
+    setVersion: (version: string) => void;
+    addCVVersion: (version: string) => void;
 }
 
-export default function CVForm({ t, cv, version }: CVFormProps) {
+export default function CVForm({ t, cv, version, setVersion, addCVVersion }: CVFormProps) {
     const [validated, setValidated] = useState(false);
     const [editing, setEditing] = useState(true);
     const [errors, setErrors] = useState<FormErrors | null>(null);
@@ -111,10 +113,20 @@ export default function CVForm({ t, cv, version }: CVFormProps) {
         }
     };
 
+    const [isAddingVersion, setIsAddingVersion] = useState(false);
+    const [newVersionName, setNewVersionName] = useState("");
+
+    const addNewVersion = () => {
+        if (newVersionName.trim().length > 0) {
+            addCVVersion(newVersionName.trim());
+            setIsAddingVersion(false);
+        }
+    };
+
     return (
-         <Box py="md">
-            <Text fw={700} size="lg">
-                User data
+         <Box>
+            <Text fw={700} size="lg" pt="md">
+                {t("cv.editor.form.userDataTitle")}
             </Text>
 
             <Box
@@ -324,6 +336,74 @@ export default function CVForm({ t, cv, version }: CVFormProps) {
                 </Flex>
                 
             </Box>
+        
+            <Text fw={700} size="lg" py="md">
+                {t("cv.editor.form.userDataTitle")}
+            </Text>
+            
+            <Flex pos="relative" gap="md" w="100%" align="center">
+                {
+                    isAddingVersion ? (
+                        <Box flex={1}>
+                            <ValidatableInput
+                                placeholder={t("cv.editor.form.newVersionInputPlaceholder")}
+                                value={newVersionName}
+                                onChange={(value) => {
+                                    setNewVersionName(value);
+                                }}
+                                name={"new_version"}
+                            />
+                        </Box>
+                    ) : (
+                        <>
+                            <NativeSelect 
+                                flex={1}
+                                data={Object.keys(cv.sections)} 
+                            />
+                            <Text
+                                pos="absolute"
+                                size="sm"
+                                top={8}
+                                c="gray.6"
+                                bg="white"
+                                fw={500}
+                                style={{
+                                    pointerEvents: "none",
+                                    transform: "translateY(-85%) scale(0.75)",
+                                    margin: "0 0 0 4px",
+                                }}
+                            >
+                                {t("cv.editor.form.versionDropdownLabel")}
+                            </Text>
+                        </>
+                    )
+                }
+                
+                {
+                    isAddingVersion ? (
+                        <Flex gap="sm">
+                            <Button
+                                onClick={addNewVersion}
+                            >
+                                {t("cv.editor.form.validateButton")}
+                            </Button>
+                            <Button
+                                variant="outline"
+                                color="red"
+                                onClick={() => setIsAddingVersion(false)}
+                            >
+                                {t("cv.editor.form.addVersionCancelButton")}
+                            </Button>
+                        </Flex>
+                    ) : (
+                        <Button
+                            onClick={() => setIsAddingVersion(true)}
+                        >
+                            {t("cv.editor.form.addVersionButton")}
+                        </Button>
+                    )
+                }
+            </Flex>
         </Box>
     );
 }
