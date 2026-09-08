@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Avatar, Box, Button, FileButton, Flex, Grid, NativeSelect, Stack, Text, TextInput } from '@mantine/core';
 import { useForm, type FormErrors } from '@mantine/form';
 import type { TFunction } from 'i18next';
@@ -20,7 +20,7 @@ type CVFormProps = {
   cv: CVRaw;
   version: string | null;
   setVersion: (version: string) => void;
-  addCVVersion: (version: string) => void;
+  addCVVersion: (cv: CVRaw, version: string) => void;
   saveCV: (cv: CVRaw) => void;
 };
 
@@ -118,6 +118,16 @@ export default function CVForm({ t, cv, version, setVersion, addCVVersion, saveC
     },
   });
 
+  useEffect(() => {
+    if (cv && version && cv.sections[version]) {
+      form.setValues({
+        user_data: cv.user_data,
+        sections: cv.sections,
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [version]);
+
   const handleValidate = () => {
     const result = form.validate();
 
@@ -143,7 +153,7 @@ export default function CVForm({ t, cv, version, setVersion, addCVVersion, saveC
 
   const addNewVersion = () => {
     if (newVersionName.trim().length > 0) {
-      addCVVersion(newVersionName.trim());
+      addCVVersion(form.values, newVersionName.trim());
       setIsAddingVersion(false);
       setNewVersionName('');
     }
@@ -169,6 +179,14 @@ export default function CVForm({ t, cv, version, setVersion, addCVVersion, saveC
     delete currentOtherSections[sectionKey];
 
     form.setFieldValue(`sections.${version}.other_sections`, currentOtherSections);
+  };
+
+  const handleUpdateVersion = (newVersion: string) => {
+    if (newVersion && newVersion !== version) {
+      setValidated(false);
+      setEditing(true);
+      setVersion(newVersion);
+    }
   };
 
   const customSections = version ? form.values.sections[version]?.other_sections || {} : {};
@@ -328,7 +346,7 @@ export default function CVForm({ t, cv, version, setVersion, addCVVersion, saveC
               flex={1}
               data={Object.keys(cv.sections)}
               value={version || ''}
-              onChange={(event) => setVersion(event.currentTarget.value)}
+              onChange={(event) => handleUpdateVersion(event.currentTarget.value)}
             />
           </>
         )}

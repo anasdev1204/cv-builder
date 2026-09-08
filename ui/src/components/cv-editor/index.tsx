@@ -116,42 +116,37 @@ export default function CVEditor() {
     }
   }, [cv, setCurrentCV, setVersion]);
 
-  const addCVVersion = useCallback(
-    (versionName: string) => {
-      if (currentCV) {
-        setCurrentCV({
-          ...currentCV,
-          sections: {
-            ...currentCV.sections,
-            [versionName]: {
-              summary: {
-                title: '',
-                content: '',
-              },
-              experience: {
-                title: '',
-                content: [],
-              },
-              education: {
-                title: '',
-                content: [],
-              },
-              skills: {
-                title: '',
-                content: [],
-              },
-              languages: {
-                title: '',
-                content: [],
-              },
-              other_sections: {},
-            },
+  const addCVVersion = (cv: CVRaw, versionName: string) => {
+    setCurrentCV({
+      ...cv,
+      sections: {
+        ...cv.sections,
+        [versionName]: {
+          summary: {
+            title: '',
+            content: '',
           },
-        });
-      }
-    },
-    [currentCV, setCurrentCV],
-  );
+          experience: {
+            title: '',
+            content: [],
+          },
+          education: {
+            title: '',
+            content: [],
+          },
+          skills: {
+            title: '',
+            content: [],
+          },
+          languages: {
+            title: '',
+            content: [],
+          },
+          other_sections: {},
+        },
+      },
+    });
+  };
 
   const saveCV = (updatedCV: CVRaw) => {
     save(updatedCV);
