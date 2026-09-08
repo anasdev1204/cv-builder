@@ -1,47 +1,112 @@
 {
   "cv": {
     "info": {
-      "expand": "e",
-      "content": "e"
+      "expand": "Confidentialité & Code Source",
+      "content": "Toutes vos données sont enregistrées localement dans votre navigateur via IndexedDB et LocalStorage : aucune information n'est envoyée vers un serveur externe. Le code source open-source de ce site et de son API est disponible sur GitHub : https://github.com/anasdev1204/cv-builder"
     },
     "editor": {
       "noCV": {
-        "title": "No CV yet",
-        "description": "You don't have a CV created yet. Create one to start building and editing your profile.",
-        "button": "Create New CV"
+        "title": "Aucun CV trouvé",
+        "description": "Vous n'avez pas encore créé de CV. Cliquez ci-dessous pour commencer à construire votre profil professionnel.",
+        "button": "Créer un CV"
       },
       "form": {
-        "validationErrorTitle": "Please fix the following errors before submitting the form",
-        "validateButton": "Validate",
-        "editButton": "Edit"
+        "userDataTitle": "Informations personnelles",
+        "validationErrorTitle": "Veuillez corriger les erreurs suivantes :",
+        "validateButton": "Enregistrer & Valider",
+        "versionDropdownLabel": "Version du CV sélectionnée",
+        "editButton": "Modifier",
+        "cancelButton": "Annuler",
+        "cvSectionsTitle": "Rubriques du CV",
+        "addVersionButton": "Nouvelle version",
+        "newVersionInputPlaceholder": "Nom de la version (ex. Développeur Full Stack)",
+        "addEntryButton": "Ajouter une entrée",
+        "addListItem": "Ajouter un élément",
+        "addBulletPoint": "Ajouter une puce",
+        "otherSectionsTitle": "Rubriques personnalisées",
+        "customSectionNamePlaceholder": "Titre de la rubrique (ex. Certifications)",
+        "addCustomSection": "Ajouter une rubrique"
       },
       "nameInput": {
-        "placeholder": "Your name",
-        "validationError": "Name must be at least 2 characters"
+        "placeholder": "Nom complet",
+        "validationError": "Le nom doit contenir au moins 2 caractères"
       },
       "emailInput": {
-        "placeholder": "Your email",
-        "validationError": "Invalid email address"
+        "placeholder": "Adresse e-mail",
+        "validationError": "Veuillez saisir une adresse e-mail valide"
       },
       "phoneNumberInput": {
-        "placeholder": "Your phone number",
-        "validationError": "Invalid phone number. Please enter a valid phone number with country code, use format: +1234567890"
+        "placeholder": "Numéro de téléphone",
+        "validationError": "Veuillez saisir un numéro valide avec l'indicatif pays (ex. +33612345678)"
       },
       "linkedinInput": {
-        "placeholder": "Your LinkedIn profile",
-        "validationError": "Invalid linkedin URL. Please enter a valid LinkedIn profile URL"
+        "placeholder": "URL du profil LinkedIn",
+        "validationError": "Veuillez saisir une URL LinkedIn valide (ex. https://linkedin.com/in/nomdutilisateur)"
       },
       "portfolioInput": {
-        "placeholder": "Your portfolio",
-        "validationError": "Invalid URL"
+        "placeholder": "URL du site / portfolio",
+        "validationError": "Veuillez saisir une URL valide (ex. https://monportfolio.com)"
       },
       "countryInput": {
-        "placeholder": "Your country",
-        "validationError": "Country must be at least 2 characters"
+        "placeholder": "Pays",
+        "validationError": "Le pays doit contenir au moins 2 caractères"
       },
       "cityInput": {
-        "placeholder": "Your city",
-        "validationError": "City must be at least 2 characters"
+        "placeholder": "Ville",
+        "validationError": "La ville doit contenir au moins 2 caractères"
+      },
+      "sections": {
+        "summary": "Profil / Résumé",
+        "experience": "Expérience professionnelle",
+        "education": "Formation",
+        "languages": "Langues",
+        "skills": "Compétences"
+      },
+      "summaryInput": {
+        "titlePlaceholder": "Titre de la section",
+        "contentPlaceholder": "Rédigez un court résumé de votre parcours professionnel, vos compétences clés et vos objectifs...",
+        "titleValidationError": "Le titre doit contenir au moins 2 caractères",
+        "contentValidationError": "Le résumé doit contenir au moins 10 caractères"
+      },
+      "experienceInput": {
+        "titlePlaceholder": "Titre de la section",
+        "titleValidationError": "Le titre doit contenir au moins 2 caractères"
+      },
+      "educationInput": {
+        "titlePlaceholder": "Titre de la section",
+        "titleValidationError": "Le titre doit contenir au moins 2 caractères"
+      },
+      "languagesInput": {
+        "titlePlaceholder": "Titre de la section",
+        "titleValidationError": "Le titre doit contenir au moins 2 caractères"
+      },
+      "skillsInput": {
+        "titlePlaceholder": "Titre de la section",
+        "titleValidationError": "Le titre doit contenir au moins 2 caractères"
+      },
+      "entryInput": {
+        "sectionTitlePlaceholder": "Titre de la section",
+        "entryHeader": "Élément",
+        "titlePlaceholder": "Poste / Diplôme (ex. Développeur Frontend)",
+        "subtitlePlaceholder": "Entreprise / École (ex. Tech Corp)",
+        "startDatePlaceholder": "Date de début",
+        "endDatePlaceholder": "Date de fin (ou Aujourd'hui)",
+        "bulletPointsLabel": "Réalisations clés & Responsabilités",
+        "bulletPointPlaceholder": "Décrivez une réalisation ou responsabilité clé...",
+        "titleValidationError": "Le titre doit contenir au moins 2 caractères",
+        "subtitleValidationError": "L'entreprise ou l'école doit contenir au moins 2 caractères",
+        "datesValidationError": "La date de début doit être antérieure à la date de fin",
+        "bulletPointValidationError": "La puce doit contenir au moins 5 caractères"
+      },
+      "listInput": {
+        "itemPlaceholder": "Entrez un élément (ex. Français - Langue maternelle, React.js)",
+        "removeItemButton": "Supprimer",
+        "contentValidationError": "L'élément doit contenir au moins 2 caractères"
+      },
+      "custom": {
+        "paragraph": "Texte (Paragraphe)",
+        "stringList": "Liste simple",
+        "entries": "Expérience détaillée / Chronologie"
       }
     }
   }
