@@ -5,14 +5,22 @@ import CreateNewCVSection from "@/components/cv-editor/create-new-cv";
 import CVForm from "./cv-form";
 
 import type { CVRaw } from "@/types";
+import { useCV } from "@/hooks/useDB/useCV";
 
-interface CVEditorProps {
-    cv: CVRaw | null;
-    onSave: () => void;
-}
+export default function CVEditor() {
+    const {
+        data: cv,
+        save
+    } = useCV();
 
-export default function CVEditor({ cv, onSave }: CVEditorProps) {
     const [currentCV, setCurrentCV] = useState<CVRaw | null>(cv);
+
+    useEffect(() => {
+        if (cv) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setCurrentCV(cv);
+        }
+    }, [cv, setCurrentCV]);
    
     const [version, setVersion] = useState<string | null>(null);
 
@@ -27,46 +35,99 @@ export default function CVEditor({ cv, onSave }: CVEditorProps) {
         if (!cv) {
             setCurrentCV({
                 user_data: {
-                    name: "name",
-                    email: "name@example.com",
+                    name: "John Doe",
+                    email: "john.doe@example.com",
                     picture: null,
-                    phone_number: null,
-                    linkedin: null,
-                    portfolio: null,
+                    phone_number: "+33 6 12 34 56 78",
+                    linkedin: "https://linkedin.com/in/johndoe",
+                    portfolio: "https://johndoe.dev",
                     address: {
-                        country: "france",
-                        city: "grenoble",
-                    }
+                        country: "France",
+                        city: "Paris",
+                    },
                 },
                 sections: {
                     "default": {
                         summary: {
-                            title: "",
-                            content: ""
+                            title: "Professional Summary",
+                            content:
+                                "Software engineer with experience building scalable web applications and data-driven systems.",
                         },
+
                         experience: {
-                            title: "",
-                            content: []
+                            title: "Experience",
+                            content: [
+                                {
+                                    title: "Software Engineer",
+                                    subtitle: "Tech Company",
+                                    start_date: "2024-01-01",
+                                    end_date: "2026-06-01",
+                                    bullet_points: [
+                                        "Developed scalable React and TypeScript applications",
+                                        "Designed REST APIs using Python and FastAPI",
+                                        "Improved application performance by 30%",
+                                    ],
+                                },
+                                {
+                                    title: "Web Developer Intern",
+                                    subtitle: "Digital Solutions",
+                                    start_date: "2023-06-01",
+                                    end_date: "2023-09-01",
+                                    bullet_points: [
+                                        "Built responsive web interfaces",
+                                        "Integrated third-party APIs",
+                                    ],
+                                },
+                            ],
                         },
+
                         education: {
-                            title: "",
-                            content: []
+                            title: "Education",
+                            content: [
+                                {
+                                    title: "MSc Data Science",
+                                    subtitle: "University of Example",
+                                    start_date: "2024-09-01",
+                                    end_date: "2026-06-01",
+                                    bullet_points: [
+                                        "Specialized in machine learning and statistical modelling",
+                                        "Completed projects involving large-scale data analysis",
+                                    ],
+                                },
+                                {
+                                    title: "BSc Computer Science",
+                                    subtitle: "University of Example",
+                                    start_date: "2021-09-01",
+                                    end_date: "2024-06-01",
+                                    bullet_points: [
+                                        "Focused on software engineering and artificial intelligence",
+                                    ],
+                                },
+                            ],
                         },
+
                         skills: {
-                            title: "",
-                            content: []
+                            title: "Skills",
+                            content: [
+                                "programming",
+                                "web development",
+                                "data analysis",
+                                "machine learning",
+                            ],
                         },
+
                         languages: {
-                            title: "",
-                            content: []
+                            title: "Languages",
+                            content: [
+                                "English",
+                                "French",
+                            ],
                         },
-                        other_sections: {
 
-                        }
-                    }
-                },
+                    other_sections: {},
+                    },
+                }
             });
-
             setVersion("default");
         }
     }, [cv, setCurrentCV, setVersion]);
@@ -107,12 +168,16 @@ export default function CVEditor({ cv, onSave }: CVEditorProps) {
         }
     }, [currentCV, setCurrentCV]);
 
+    const saveCV = (updatedCV: CVRaw) => {
+        save(updatedCV);
+    };
+
     const { t } = useTranslation();
 
     return (
         <Box>
             {
-                currentCV ? <CVForm t={t} cv={currentCV} version={version} setVersion={setVersion} addCVVersion={addCVVersion} /> : <CreateNewCVSection t={t} initCv={initCv} />
+                currentCV ? <CVForm t={t} cv={currentCV} version={version} setVersion={setVersion} addCVVersion={addCVVersion} saveCV={saveCV} /> : <CreateNewCVSection t={t} initCv={initCv} />
             }
         </Box>
     )

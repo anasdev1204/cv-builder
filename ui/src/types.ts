@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type ParsedJD = {
     job_title: string | null;
     seniority: string | null;
@@ -203,6 +204,21 @@ export interface SectionEntry {
   end_date?: string | null;
   bullet_points: string[];
 }
+
+
+export const isSectionEntry = (obj: any): obj is SectionEntry => {
+  return (
+    obj &&
+    typeof obj === "object" &&
+    typeof obj.title === "string" &&
+    typeof obj.subtitle === "string" &&
+    (typeof obj.start_date === "string" || obj.start_date === null || obj.start_date === undefined) &&
+    (typeof obj.end_date === "string" || obj.end_date === null || obj.end_date === undefined) &&
+    Array.isArray(obj.bullet_points) &&
+    obj.bullet_points.every((point: any) => typeof point === "string")
+  );
+}
+
 export interface SectionMeta {
   title: string;
   content: string | SectionEntry[] | string[];

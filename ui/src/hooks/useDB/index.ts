@@ -10,6 +10,7 @@ export function useDB<T>(
     const [error, setError] = useState<string | null>(null);
 
     const load = useCallback(async () => {
+        console.log("Loading data from DB...");
         setLoading(true);
         setError(null);
 
@@ -29,6 +30,7 @@ export function useDB<T>(
 
     const save = useCallback(
         async (value: T) => {
+            console.log("Saving data to DB:", value);
             setSaving(true);
             setError(null);
 
