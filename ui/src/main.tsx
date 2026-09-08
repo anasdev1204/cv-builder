@@ -4,7 +4,7 @@ import { MantineProvider } from '@mantine/core';
 import "@/i18n";
 import App from '@/App';
 import '@mantine/core/styles.css';
-
+import '@mantine/dates/styles.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
