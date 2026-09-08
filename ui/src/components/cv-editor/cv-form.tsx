@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
-import { Box, Button, Flex, Grid, NativeSelect, Text, TextInput } from '@mantine/core';
+import { Avatar, Box, Button, FileButton, Flex, Grid, NativeSelect, Stack, Text, TextInput } from '@mantine/core';
 import { useForm, type FormErrors } from '@mantine/form';
 import type { TFunction } from 'i18next';
 
@@ -14,7 +14,6 @@ import SectionListEditor from './editors/section-list-editor';
 import SectionDynamic from './editors/section-dynamic';
 import { validateEntryContent } from './validators/entry-content';
 
-// TODO: ADD IMAGE IN USER DATA
 
 type CVFormProps = {
   t: TFunction;
@@ -174,11 +173,59 @@ export default function CVForm({ t, cv, version, setVersion, addCVVersion, saveC
 
   const customSections = version ? form.values.sections[version]?.other_sections || {} : {};
 
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
   return (
     <Box>
       <Text fw={700} size="lg" pt="md">
         {t('cv.editor.form.userDataTitle')}
       </Text>
+
+      <Flex align="center" gap="md" my="md">
+        <Avatar
+          src={form.values.user_data.picture}
+          size="xl"
+          radius="md"
+          alt={form.values.user_data.name || 'User Picture'}
+        />
+        <Stack gap="xs">
+          <Flex gap="xs">
+            <FileButton
+              onChange={async (file) => {
+                if (file) {
+                  const base64 = await fileToBase64(file);
+                  updateFormValue('user_data.picture', base64);
+                }
+              }}
+              accept="image/png,image/jpeg,image/webp"
+            >
+              {(props) => (
+                <Button {...props} variant="light" size="xs">
+                  {t('cv.editor.pictureInput.uploadButton', { defaultValue: 'Upload Picture' })}
+                </Button>
+              )}
+            </FileButton>
+
+            {form.values.user_data.picture && (
+              <Button
+                variant="subtle"
+                color="red"
+                size="xs"
+                onClick={() => updateFormValue('user_data.picture', null)}
+              >
+                {t('cv.editor.pictureInput.removeButton', { defaultValue: 'Remove' })}
+              </Button>
+            )}
+          </Flex>
+        </Stack>
+      </Flex>
 
       <FormBlockContainer path="user_data" errors={form.errors} t={t}>
         <Grid gap="md">
