@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next';
 
 export default function Navbar() {
   const { i18n } = useTranslation();
+  const { t } = useTranslation();
   const location = useLocation();
 
   const navLinks = [
-    { label: 'Edit CV', path: '/editcv' },
-    { label: 'Compile CV', path: '/compilecv' },
-    { label: 'Match CV', path: '/matchcv' },
-    { label: 'Templates', path: '/templates' },
+    { label: t('navbar.editCV'), path: '/editcv' },
+    { label: t('navbar.compileCV'), path: '/compilecv' },
+    { label: t('navbar.matchCV'), path: '/matchcv' },
+    { label: t('navbar.templates'), path: '/templates' },
   ];
 
   const handleLanguageChange = (lang: string) => {

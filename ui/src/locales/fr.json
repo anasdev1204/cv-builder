@@ -4,6 +4,12 @@
       "expand": "Confidentialité & Code Source",
       "content": "Toutes vos données sont enregistrées localement dans votre navigateur via IndexedDB et LocalStorage : aucune information n'est envoyée vers un serveur externe. Le code source open-source de ce site et de son API est disponible sur GitHub : https://github.com/anasdev1204/cv-builder"
     },
+    "navbar": {
+      "editCV": "Modifier le CV",
+      "compileCV": "Compiler le CV",
+      "matchCV": "Correspondre au CV",
+      "templates": "Modèles"
+    },
     "editor": {
       "noCV": {
         "title": "Aucun CV trouvé",

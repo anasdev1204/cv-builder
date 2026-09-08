@@ -4,6 +4,12 @@
       "expand": "Privacy & Source Code",
       "content": "All your data is saved locally in your browser via IndexedDB and LocalStorage—nothing is ever uploaded to a server. The open-source code for this site and its API is available on GitHub: https://github.com/anasdev1204/cv-builder"
     },
+    "navbar": {
+      "editCV": "Edit CV",
+      "compileCV": "Compile CV",
+      "matchCV": "Match CV",
+      "templates": "Templates"
+    },
     "editor": {
       "noCV": {
         "title": "No CV Found",
