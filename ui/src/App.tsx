@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Box } from '@mantine/core';
-import CVView from '@/views/cv';
+import EditCVView from '@/views/edit-cv';
 import Navbar from '@/components/navbar';
 
 function App() {
@@ -12,15 +12,15 @@ function App() {
           <Routes>
             {/* Automatic redirect from / to /editcv */}
             <Route path="/" element={<Navigate to="/editcv" replace />} />
-            
+
             {/* Main Edit CV Route */}
-            <Route path="/editcv" element={<CVView />} />
-            
+            <Route path="/editcv" element={<EditCVView />} />
+
             {/* Placeholder routes for the remaining nav links */}
             <Route path="/compilecv" element={<Box>Compile CV View</Box>} />
             <Route path="/matchcv" element={<Box>Match CV View</Box>} />
             <Route path="/templates" element={<Box>Templates View</Box>} />
-            
+
             {/* Fallback redirect */}
             <Route path="*" element={<Navigate to="/editcv" replace />} />
           </Routes>

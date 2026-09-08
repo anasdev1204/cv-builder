@@ -4,7 +4,7 @@ import { useCV } from '@/hooks/useDB/useCV';
 import { Box, LoadingOverlay } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 
-export default function CVView() {
+export default function EditCVView() {
   const { loading, saving, error } = useCV();
   const { t } = useTranslation();
 
