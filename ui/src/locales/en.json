@@ -1,113 +1,113 @@
 {
-    "cv": {
-        "info": {
-            "expand": "e",
-            "content": "e"
-        },
-        "editor": {
-            "noCV": {
-                "title": "No CV yet",
-                "description": "You don't have a CV created yet. Create one to start building and editing your profile.",
-                "button": "Create New CV"
-            },
-            "form": {
-                "userDataTitle": "User Data",
-                "validationErrorTitle": "Please fix the following errors before submitting the form",
-                "validateButton": "Validate",
-                "versionDropdownLabel": "CV version",
-                "editButton": "Edit",
-                "cancelButton": "Cancel",
-                "cvSectionsTitle": "CV Sections",
-                "addVersionButton": "Add Version",
-                "newVersionInputPlaceholder": "New version",
-                "addEntryButton": "Add Entry",
-                "addListItem": "Add Item",
-                "addBulletPoint": "Add Bullet Point",
-                "otherSectionsTitle": "Other Sections",
-                "customSectionNamePlaceholder": "Custom Section",
-                "addCustomSection": "Add Custom Section"
-            },
-            "nameInput": {
-                "placeholder": "Your name",
-                "validationError": "Name must be at least 2 characters"
-            },
-            "emailInput": {
-                "placeholder": "Your email",
-                "validationError": "Invalid email address"
-            },
-            "phoneNumberInput": {
-                "placeholder": "Your phone number",
-                "validationError": "Invalid phone number. Please enter a valid phone number with country code, use format: +1234567890"
-            },
-            "linkedinInput": {
-                "placeholder": "Your LinkedIn profile",
-                "validationError": "Invalid linkedin URL. Please enter a valid LinkedIn profile URL"
-            },
-            "sections": {
-                "summary": "Summary",
-                "experience": "Experience",
-                "education": "Education",
-                "languages": "Languages",
-                "skills": "Skills"
-            },
-            "portfolioInput": {
-                "placeholder": "Your portfolio",
-                "validationError": "Invalid URL"
-            },
-            "countryInput": {
-                "placeholder": "Your country",
-                "validationError": "Country must be at least 2 characters"
-            },
-            "cityInput": {
-                "placeholder": "Your city",
-                "validationError": "City must be at least 2 characters"
-            },
-            "summaryInput": {
-                "titlePlaceholder": "Summary section title",
-                "contentPlaceholder": "Summary content",
-                "titleValidationError": "Summary title must be at least 2 characters",
-                "contentValidationError": "Summary must be at least 10 characters"
-            },
-            "experienceInput": {
-                "titlePlaceholder": "Experience section title",
-                "titleValidationError": "Experience title must be at least 2 characters"
-            },
-            "educationInput": {
-                "titlePlaceholder": "Education section title",
-                "titleValidationError": "Education title must be at least 2 characters"
-            },
-            "languagesInput": {
-                "titlePlaceholder": "Languages section title",
-                "titleValidationError": "Languages title must be at least 2 characters"
-            },
-            "skillsInput": {
-                "titlePlaceholder": "Skills section title",
-                "titleValidationError": "Skills title must be at least 2 characters"
-            },
-            "entryInput": {
-                "sectionTitlePlaceholder": "Section title",
-                "entryHeader": "Entry",
-                "titlePlaceholder": "Entry title",
-                "subtitlePlaceholder": "Entry subtitle",
-                "startDatePlaceholder": "Entry start date",
-                "endDatePlaceholder": "Entry end date",
-                "bulletPointsLabel": "Bullet Points",
-                "bulletPointPlaceholder": "Bullet point description",
-                "titleValidationError": "Entry title must be at least 2 characters",
-                "subtitleValidationError": "Entry subtitle must be at least 2 characters",
-                "datesValidationError": "Entry start date must be before end date",
-                "bulletPointValidationError": "Bullet point must be at least 5 characters"
-            },
-            "listInput": {
-                "itemPlaceholder": "Item",
-                "removeItemButton": "Remove Item",
-                "contentValidationError": "Item must be at least 2 characters"
-            },
-            "custom": {
-                "paragraph": "Paragraph",
-                "stringList": "List (Strings)",
-                "entries": "Entries (Structured)"
-            }
-        }
+  "cv": {
+    "info": {
+      "expand": "e",
+      "content": "e"
+    },
+    "editor": {
+      "noCV": {
+        "title": "No CV yet",
+        "description": "You don't have a CV created yet. Create one to start building and editing your profile.",
+        "button": "Create New CV"
+      },
+      "form": {
+        "userDataTitle": "User Data",
+        "validationErrorTitle": "Please fix the following errors before submitting the form",
+        "validateButton": "Validate",
+        "versionDropdownLabel": "CV version",
+        "editButton": "Edit",
+        "cancelButton": "Cancel",
+        "cvSectionsTitle": "CV Sections",
+        "addVersionButton": "Add Version",
+        "newVersionInputPlaceholder": "New version",
+        "addEntryButton": "Add Entry",
+        "addListItem": "Add Item",
+        "addBulletPoint": "Add Bullet Point",
+        "otherSectionsTitle": "Other Sections",
+        "customSectionNamePlaceholder": "Custom Section",
+        "addCustomSection": "Add Custom Section"
+      },
+      "nameInput": {
+        "placeholder": "Your name",
+        "validationError": "Name must be at least 2 characters"
+      },
+      "emailInput": {
+        "placeholder": "Your email",
+        "validationError": "Invalid email address"
+      },
+      "phoneNumberInput": {
+        "placeholder": "Your phone number",
+        "validationError": "Invalid phone number. Please enter a valid phone number with country code, use format: +1234567890"
+      },
+      "linkedinInput": {
+        "placeholder": "Your LinkedIn profile",
+        "validationError": "Invalid linkedin URL. Please enter a valid LinkedIn profile URL"
+      },
+      "sections": {
+        "summary": "Summary",
+        "experience": "Experience",
+        "education": "Education",
+        "languages": "Languages",
+        "skills": "Skills"
+      },
+      "portfolioInput": {
+        "placeholder": "Your portfolio",
+        "validationError": "Invalid URL"
+      },
+      "countryInput": {
+        "placeholder": "Your country",
+        "validationError": "Country must be at least 2 characters"
+      },
+      "cityInput": {
+        "placeholder": "Your city",
+        "validationError": "City must be at least 2 characters"
+      },
+      "summaryInput": {
+        "titlePlaceholder": "Summary section title",
+        "contentPlaceholder": "Summary content",
+        "titleValidationError": "Summary title must be at least 2 characters",
+        "contentValidationError": "Summary must be at least 10 characters"
+      },
+      "experienceInput": {
+        "titlePlaceholder": "Experience section title",
+        "titleValidationError": "Experience title must be at least 2 characters"
+      },
+      "educationInput": {
+        "titlePlaceholder": "Education section title",
+        "titleValidationError": "Education title must be at least 2 characters"
+      },
+      "languagesInput": {
+        "titlePlaceholder": "Languages section title",
+        "titleValidationError": "Languages title must be at least 2 characters"
+      },
+      "skillsInput": {
+        "titlePlaceholder": "Skills section title",
+        "titleValidationError": "Skills title must be at least 2 characters"
+      },
+      "entryInput": {
+        "sectionTitlePlaceholder": "Section title",
+        "entryHeader": "Entry",
+        "titlePlaceholder": "Entry title",
+        "subtitlePlaceholder": "Entry subtitle",
+        "startDatePlaceholder": "Entry start date",
+        "endDatePlaceholder": "Entry end date",
+        "bulletPointsLabel": "Bullet Points",
+        "bulletPointPlaceholder": "Bullet point description",
+        "titleValidationError": "Entry title must be at least 2 characters",
+        "subtitleValidationError": "Entry subtitle must be at least 2 characters",
+        "datesValidationError": "Entry start date must be before end date",
+        "bulletPointValidationError": "Bullet point must be at least 5 characters"
+      },
+      "listInput": {
+        "itemPlaceholder": "Item",
+        "removeItemButton": "Remove Item",
+        "contentValidationError": "Item must be at least 2 characters"
+      },
+      "custom": {
+        "paragraph": "Paragraph",
+        "stringList": "List (Strings)",
+        "entries": "Entries (Structured)"
+      }
     }
+  }
 }

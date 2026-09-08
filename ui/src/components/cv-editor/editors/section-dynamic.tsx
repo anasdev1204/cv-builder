@@ -1,11 +1,11 @@
-import { NativeSelect, Paper, Flex, Text, ActionIcon } from "@mantine/core";
-import { IconTrash } from "@tabler/icons-react";
-import type { UseFormReturnType } from "@mantine/form";
-import type { TFunction } from "i18next";
-import type { CVRaw } from "@/types";
-import SectionParagraphEditor from "./section-paragraph-editor";
-import SectionListEditor from "./section-list-editor";
-import SectionEntriesEditor from "./section-entries-editor";
+import { NativeSelect, Paper, Flex, Text, ActionIcon } from '@mantine/core';
+import { IconTrash } from '@tabler/icons-react';
+import type { UseFormReturnType } from '@mantine/form';
+import type { TFunction } from 'i18next';
+import type { CVRaw } from '@/types';
+import SectionParagraphEditor from './section-paragraph-editor';
+import SectionListEditor from './section-list-editor';
+import SectionEntriesEditor from './section-entries-editor';
 
 type DynamicCustomSectionProps = {
   t: TFunction;
@@ -26,27 +26,27 @@ export default function SectionDynamic({
   const sectionData = form.values.sections[version]?.other_sections?.[sectionKey];
 
   const getContentType = () => {
-    if (!sectionData) return "paragraph";
-    if (typeof sectionData.content === "string") return "paragraph";
+    if (!sectionData) return 'paragraph';
+    if (typeof sectionData.content === 'string') return 'paragraph';
     if (Array.isArray(sectionData.content)) {
-      if (sectionData.content.length === 0) return "string_list";
-      return typeof sectionData.content[0] === "string" ? "string_list" : "entries";
+      if (sectionData.content.length === 0) return 'string_list';
+      return typeof sectionData.content[0] === 'string' ? 'string_list' : 'entries';
     }
-    return "paragraph";
+    return 'paragraph';
   };
 
   const handleTypeChange = (type: string) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let initialContent: string | string[] | any[] = "";
-    if (type === "string_list") initialContent = [""];
-    if (type === "entries") {
+    let initialContent: string | string[] | any[] = '';
+    if (type === 'string_list') initialContent = [''];
+    if (type === 'entries') {
       initialContent = [
         {
-          title: "",
-          subtitle: "",
+          title: '',
+          subtitle: '',
           start_date: null,
           end_date: null,
-          bullet_points: [""],
+          bullet_points: [''],
         },
       ];
     }
@@ -66,9 +66,9 @@ export default function SectionDynamic({
             value={contentType}
             onChange={(e) => handleTypeChange(e.currentTarget.value)}
             data={[
-              { label: t("cv.editor.custom.paragraph"), value: "paragraph" },
-              { label: t("cv.editor.custom.stringList"), value: "string_list" },
-              { label: t("cv.editor.custom.entries"), value: "entries" },
+              { label: t('cv.editor.custom.paragraph'), value: 'paragraph' },
+              { label: t('cv.editor.custom.stringList'), value: 'string_list' },
+              { label: t('cv.editor.custom.entries'), value: 'entries' },
             ]}
           />
           <ActionIcon color="red" variant="subtle" onClick={onRemove}>
@@ -77,7 +77,7 @@ export default function SectionDynamic({
         </Flex>
       </Flex>
 
-      {contentType === "paragraph" && (
+      {contentType === 'paragraph' && (
         <SectionParagraphEditor
           t={t}
           form={form}
@@ -89,7 +89,7 @@ export default function SectionDynamic({
         />
       )}
 
-      {contentType === "string_list" && (
+      {contentType === 'string_list' && (
         <SectionListEditor
           t={t}
           form={form}
@@ -101,7 +101,7 @@ export default function SectionDynamic({
         />
       )}
 
-      {contentType === "entries" && (
+      {contentType === 'entries' && (
         <SectionEntriesEditor
           t={t}
           form={form}

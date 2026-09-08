@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type ParsedJD = {
-    job_title: string | null;
-    seniority: string | null;
-    technical_skills: string[][] | null;
-    soft_skills: string[][] | null;
-    tools_and_technologies: string[][] | null;
-    qualifications: string[][] | null;
-    experience_requirements: string[][] | null;
-    domain_terms: string[] | null;
-    keywords: string[] | null;
-}
+  job_title: string | null;
+  seniority: string | null;
+  technical_skills: string[][] | null;
+  soft_skills: string[][] | null;
+  tools_and_technologies: string[][] | null;
+  qualifications: string[][] | null;
+  experience_requirements: string[][] | null;
+  domain_terms: string[] | null;
+  keywords: string[] | null;
+};
 
 interface MarginsConfig {
   top: number;
@@ -41,7 +41,7 @@ interface JobTitleConfig extends FontConfig {
   size: number;
   bold: boolean;
 }
-type Alignment = "left" | "center" | "right";
+type Alignment = 'left' | 'center' | 'right';
 interface HeaderConfig {
   alignment: Alignment;
 
@@ -74,7 +74,7 @@ interface HeadingConfig {
   divider_thickness: number;
   divider_color: string;
 }
-type DateFormat = "year" | "month_year" | "full_date";
+type DateFormat = 'year' | 'month_year' | 'full_date';
 interface DateConfig extends FontConfig {
   size: number;
   bold: boolean;
@@ -104,9 +104,9 @@ interface BulletConfig {
 
   line_spacing: number;
 
-  alignment: "left" | "justify";
+  alignment: 'left' | 'justify';
 }
-type EntryLayout = "stacked" | "compact" | "inline";
+type EntryLayout = 'stacked' | 'compact' | 'inline';
 interface EntryConfig {
   layout: EntryLayout;
 
@@ -126,7 +126,7 @@ interface EntryConfig {
   show_subtitle: boolean;
 
   title_position: Alignment;
-  date_position: "left" | "right";
+  date_position: 'left' | 'right';
 }
 interface ListConfig {
   separator: string;
@@ -138,10 +138,7 @@ interface ListConfig {
 
   alignment: Alignment;
 }
-type SectionRenderer =
-  | "paragraph"
-  | "entries"
-  | "inline_list";
+type SectionRenderer = 'paragraph' | 'entries' | 'inline_list';
 interface SectionRendererConfig {
   renderer: SectionRenderer;
 
@@ -163,7 +160,7 @@ interface SectionConfig {
   renderer: SectionRendererConfig;
 }
 
-export type TemplateConfig ={
+export type TemplateConfig = {
   page: PageConfig;
   font: FontConfig;
   header: HeaderConfig;
@@ -171,7 +168,7 @@ export type TemplateConfig ={
   entry: EntryConfig;
   list: ListConfig;
   sections: Record<string, SectionRendererConfig>;
-}
+};
 
 export type CVEntryMatch = {
   cv_entry_index: number;
@@ -182,7 +179,7 @@ export type CVEntryMatch = {
   matched_qualifications: string[];
   matched_experience_requirements: string[];
   matched_domain_terms: string[];
-}
+};
 
 export interface Address {
   country: string;
@@ -205,19 +202,20 @@ export interface SectionEntry {
   bullet_points: string[];
 }
 
-
 export const isSectionEntry = (obj: any): obj is SectionEntry => {
   return (
     obj &&
-    typeof obj === "object" &&
-    typeof obj.title === "string" &&
-    typeof obj.subtitle === "string" &&
-    (typeof obj.start_date === "string" || obj.start_date === null || obj.start_date === undefined) &&
-    (typeof obj.end_date === "string" || obj.end_date === null || obj.end_date === undefined) &&
+    typeof obj === 'object' &&
+    typeof obj.title === 'string' &&
+    typeof obj.subtitle === 'string' &&
+    (typeof obj.start_date === 'string' ||
+      obj.start_date === null ||
+      obj.start_date === undefined) &&
+    (typeof obj.end_date === 'string' || obj.end_date === null || obj.end_date === undefined) &&
     Array.isArray(obj.bullet_points) &&
-    obj.bullet_points.every((point: any) => typeof point === "string")
+    obj.bullet_points.every((point: any) => typeof point === 'string')
   );
-}
+};
 
 export interface SectionMeta {
   title: string;
@@ -235,4 +233,4 @@ export interface CvSections {
 export type CVRaw = {
   user_data: UserData;
   sections: Record<string, CvSections>;
-}
+};

@@ -1,11 +1,11 @@
-import { apiRequest } from "./client";
+import { apiRequest } from './client';
 
 export interface healthResponse {
-    status: string;
+  status: string;
 }
 
 export async function health(): Promise<healthResponse> {
-    return apiRequest<healthResponse>("/health", {
-        method: "GET",
-    });
+  return apiRequest<healthResponse>('/health', {
+    method: 'GET',
+  });
 }

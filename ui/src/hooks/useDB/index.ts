@@ -1,67 +1,56 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
 
-export function useDB<T>(
-    read: () => Promise<T | null>,
-    write: (value: T) => Promise<void>,
-) {
-    const [data, setData] = useState<T | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+export function useDB<T>(read: () => Promise<T | null>, write: (value: T) => Promise<void>) {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-    const load = useCallback(async () => {
-        console.log("Loading data from DB...");
-        setLoading(true);
-        setError(null);
+  const load = useCallback(async () => {
+    console.log('Loading data from DB...');
+    setLoading(true);
+    setError(null);
 
-        try {
-            const value = await read();
-            setData(value);
-        } catch (error) {
-            setError(
-                error instanceof Error
-                    ? error.message
-                    : "Failed to load local data.",
-            );
-        } finally {
-            setLoading(false);
-        }
-    }, [read]);
+    try {
+      const value = await read();
+      setData(value);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Failed to load local data.');
+    } finally {
+      setLoading(false);
+    }
+  }, [read]);
 
-    const save = useCallback(
-        async (value: T) => {
-            console.log("Saving data to DB:", value);
-            setSaving(true);
-            setError(null);
+  const save = useCallback(
+    async (value: T) => {
+      console.log('Saving data to DB:', value);
+      setSaving(true);
+      setError(null);
 
-            try {
-                await write(value);
-                setData(value);
-            } catch (error) {
-                setError(
-                    error instanceof Error
-                        ? error.message
-                        : "Failed to save local data.",
-                );
-                throw error;
-            } finally {
-                setSaving(false);
-            }
-        },
-        [write],
-    );
+      try {
+        await write(value);
+        setData(value);
+      } catch (error) {
+        setError(error instanceof Error ? error.message : 'Failed to save local data.');
+        throw error;
+      } finally {
+        setSaving(false);
+      }
+    },
+    [write],
+  );
 
-    useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        load();
-    }, [load]);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    load();
+  }, [load]);
 
-    return {
-        data,
-        loading,
-        saving,
-        error,
-        save,
-        reload: load,
-    };
+  return {
+    data,
+    loading,
+    saving,
+    error,
+    save,
+    reload: load,
+  };
 }
