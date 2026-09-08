@@ -1,5 +1,5 @@
 import { Box, Button, Flex, Grid, NativeSelect, Text } from "@mantine/core";
-import ValidatableInput from "./validatable-input";
+import ValidatableInput from "./components/validatable-input";
 import { useForm, type FormErrors } from "@mantine/form";
 import type { CVRaw } from "@/types";
 import type { TFunction } from "i18next";
