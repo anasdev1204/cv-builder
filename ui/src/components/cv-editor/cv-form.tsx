@@ -1,6 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
-import { Avatar, Box, Button, FileButton, Flex, Grid, NativeSelect, Stack, Text, TextInput } from '@mantine/core';
+import {
+  Avatar,
+  Box,
+  Button,
+  FileButton,
+  Flex,
+  Grid,
+  NativeSelect,
+  Stack,
+  Text,
+  TextInput,
+} from '@mantine/core';
 import { useForm, type FormErrors } from '@mantine/form';
 import type { TFunction } from 'i18next';
 
@@ -13,7 +24,6 @@ import SectionEntriesEditor from './editors/section-entries-editor';
 import SectionListEditor from './editors/section-list-editor';
 import SectionDynamic from './editors/section-dynamic';
 import { validateEntryContent } from './validators/entry-content';
-
 
 type CVFormProps = {
   t: TFunction;
@@ -125,7 +135,7 @@ export default function CVForm({ t, cv, version, setVersion, addCVVersion, saveC
         sections: cv.sections,
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [version]);
 
   const handleValidate = () => {
