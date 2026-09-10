@@ -3,8 +3,8 @@ import { IconTrash, IconPlus } from '@tabler/icons-react';
 import type { UseFormReturnType } from '@mantine/form';
 import type { TFunction } from 'i18next';
 import type { CVRaw, SectionEntry } from '@/types';
-import ValidatableInput from '@/components/cv-editor/components/validatable-input';
-import ValidatableDateInput from '@/components/cv-editor/components/validatable-date-input';
+import ValidatableInput from '@/components/cv-editor/validatable-input';
+import ValidatableDateInput from '@/components/cv-editor/validatable-date-input';
 import FormBlockContainer from '@/components/cv-editor/components/form-block-container';
 
 type SectionEntriesEditorProps = {

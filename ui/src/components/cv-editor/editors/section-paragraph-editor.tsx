@@ -2,8 +2,8 @@ import { Flex, Paper, Text } from '@mantine/core';
 import type { UseFormReturnType } from '@mantine/form';
 import type { TFunction } from 'i18next';
 import type { CVRaw } from '@/types';
-import ValidatableInput from '@/components/cv-editor/components/validatable-input';
-import ValidatableTextarea from '@/components/cv-editor/components/validatable-textarea';
+import ValidatableInput from '@/components/cv-editor/validatable-input';
+import ValidatableTextarea from '@/components/cv-editor/validatable-textarea';
 import FormBlockContainer from '@/components/cv-editor/components/form-block-container';
 
 type SectionParagraphEditorProps = {

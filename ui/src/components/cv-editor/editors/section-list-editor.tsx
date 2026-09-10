@@ -3,7 +3,7 @@ import { IconTrash, IconPlus } from '@tabler/icons-react';
 import type { UseFormReturnType } from '@mantine/form';
 import type { TFunction } from 'i18next';
 import type { CVRaw } from '@/types';
-import ValidatableInput from '@/components/cv-editor/components/validatable-input';
+import ValidatableInput from '@/components/cv-editor/validatable-input';
 import FormBlockContainer from '@/components/cv-editor/components/form-block-container';
 
 type SectionListEditorProps = {

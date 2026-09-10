@@ -15,7 +15,7 @@ import {
 import { useForm, type FormErrors } from '@mantine/form';
 import type { TFunction } from 'i18next';
 
-import ValidatableInput from './components/validatable-input';
+import ValidatableInput from './validatable-input';
 import FormBlockContainer from './components/form-block-container';
 import { type CVRaw } from '@/types';
 
