@@ -107,6 +107,12 @@
         "paragraph": "Paragraph Text",
         "stringList": "Simple List",
         "entries": "Detailed Experience / Timeline"
+      },
+      "compile": {
+        "title": "Compile CV",
+        "templateLabel": "Template",
+        "jobTitlePlaceholder": "Job title",
+        "compileButton": "Compile CV"
       }
     }
   },

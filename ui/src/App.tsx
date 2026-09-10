@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Box } from '@mantine/core';
 import EditCVView from '@/views/edit-cv';
 import Navbar from '@/components/navbar';
+import CompileCVView from './views/compile-cv';
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
             <Route path="/editcv" element={<EditCVView />} />
 
             {/* Placeholder routes for the remaining nav links */}
-            <Route path="/compilecv" element={<Box>Compile CV View</Box>} />
+            <Route path="/compilecv" element={<CompileCVView />} />
             <Route path="/matchcv" element={<Box>Match CV View</Box>} />
             <Route path="/templates" element={<Box>Templates View</Box>} />
 
