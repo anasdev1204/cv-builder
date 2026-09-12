@@ -8,6 +8,7 @@ from openai import (
     RateLimitError,
 )
 from models.cvmatch import CVMatchResult
+from services.templates import get_templates
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from fastapi import FastAPI
@@ -24,7 +25,7 @@ from models.requests import (
     MatchCVRequest,
     ParseJDRequest,
 )
-from models.responses import AIResponse, ErrorResponse
+from models.responses import AIResponse, ErrorResponse, TemplateListResponse
 from services.cv_compiler import CVCompiler
 from services.cv_jd_matcher import match_cv_entries
 from services.jd_parser import parse_job_description
@@ -236,6 +237,23 @@ async def compile_cv_endpoint(
             detail="Failed to compile the CV.",
         )
 
+
+@router.get(
+    "/templates",
+    response_model=TemplateListResponse
+)
+@limiter.limit("10/minute")
+async def list_templates(request: Request):
+    try:
+        return {
+            "templates": get_templates()
+        }
+    except Exception as e:
+        print(f"ERROR: {type(e).__name__}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to retrieve the list of templates.",
+        )
 
 @router.get(
     "/health",
