@@ -220,6 +220,7 @@ async def compile_cv_endpoint(
             job_title=body.job_title,
             template=body.template_name,
             output_format=body.output_format,
+            selected_version=body.version,
             local=False,
         )
 

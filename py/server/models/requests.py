@@ -50,6 +50,7 @@ class MatchCVRequest(BaseModel):
 
 class CompileCVRequest(BaseModel):
     cv_data: dict
+    version: str = Field(..., min_length=1, max_length=50)
     job_title: str = Field(..., min_length=1, max_length=200)
     template_name: str = Field(..., min_length=1, max_length=100)
     template_config: TemplateConfig | None = None
