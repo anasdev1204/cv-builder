@@ -16,6 +16,8 @@ from models.cv import CV, CvSections, SectionEntry, SectionMeta, UserData
 from pathlib import Path
 
 import yaml
+import base64
+from io import BytesIO
 
 from models.template import (
     BulletConfig,
@@ -212,11 +214,15 @@ class CVCompiler:
 
         if user_data.picture and header_config.show_picture:
             try:
+                _, encoded = user_data.picture.split(",", 1)
+                image_stream = BytesIO(base64.b64decode(encoded))
+
                 document.add_picture(
-                    user_data.picture,
+                    image_stream,
                     width=Inches(header_config.picture_size),
                 )
                 document.paragraphs[-1].alignment = alignment
+
             except Exception as e:
                 print(f"Error adding picture: {e}")
 
