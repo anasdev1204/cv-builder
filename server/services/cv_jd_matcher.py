@@ -1,9 +1,9 @@
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
 
-from py.models.cv import CV
-from py.models.jd import ParsedJD
-from py.models.cvmatch import CVMatchResult
+from models.cv import CV
+from models.jd import ParsedJD
+from models.cvmatch import CVMatchResult
 
 load_dotenv()
 

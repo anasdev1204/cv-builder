@@ -1,6 +1,6 @@
 from typing import Generic, TypeVar
 
-from py.models.template import TemplateConfig
+from models.template import TemplateConfig
 from pydantic import BaseModel
 
 T = TypeVar("T")

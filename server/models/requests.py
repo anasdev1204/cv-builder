@@ -1,5 +1,5 @@
-from py.models.jd import ParsedJD
-from py.models.template import TemplateConfig
+from models.jd import ParsedJD
+from models.template import TemplateConfig
 from pydantic import BaseModel, Field, field_validator
 
 ALLOWED_MODELS = {

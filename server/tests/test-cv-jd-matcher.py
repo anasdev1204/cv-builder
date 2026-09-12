@@ -1,7 +1,7 @@
 import json
 
-from py.services.cv_compiler import CVCompiler
-from py.services.cv_jd_matcher import match_cv_entries
+from services.cv_compiler import CVCompiler
+from services.cv_jd_matcher import match_cv_entries
 from pathlib import Path
 
 

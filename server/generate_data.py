@@ -1,8 +1,8 @@
 import json
 
-from py.models.cv import CV, UserData, Address, SectionEntry
-from py.models.requests import MatchCVRequest
-from py.services.cv_compiler import CVCompiler
+from models.cv import CV, UserData, Address, SectionEntry
+from models.requests import MatchCVRequest
+from services.cv_compiler import CVCompiler
 
 # cv = CV(
 #     user_data=UserData(

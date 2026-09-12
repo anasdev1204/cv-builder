@@ -7,14 +7,14 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from py.models.jd import ParsedJD
-from py.models.cv import CV, Address, SectionEntry, UserData
-from py.models.requests import ParseJDRequest, MatchCVRequest, CompileCVRequest
+from models.jd import ParsedJD
+from models.cv import CV, Address, SectionEntry, UserData
+from models.requests import ParseJDRequest, MatchCVRequest, CompileCVRequest
 import json
 
 from dotenv import load_dotenv
 
-from py.main import router
+from main import router
 
 load_dotenv()
 

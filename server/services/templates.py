@@ -2,7 +2,7 @@ from pathlib import Path
 
 from ruamel.yaml import YAML
 
-from py.models.template import TemplateConfig
+from models.template import TemplateConfig
 
 
 def get_templates() -> dict[str, TemplateConfig]:

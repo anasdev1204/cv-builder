@@ -11,13 +11,13 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.section import WD_SECTION
 from docx.oxml.ns import qn
 
-from py.models.cv import CV, CvSections, SectionEntry, SectionMeta, UserData
+from models.cv import CV, CvSections, SectionEntry, SectionMeta, UserData
 
 from pathlib import Path
 
 import yaml
 
-from py.models.template import (
+from models.template import (
     BulletConfig,
     DateConfig,
     FontConfig,
