@@ -1,4 +1,4 @@
-from models.cv import CV
+from py.models.cv import CV
 
 
 class CVStorage:

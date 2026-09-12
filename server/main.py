@@ -7,8 +7,8 @@ from openai import (
     AsyncOpenAI,
     RateLimitError,
 )
-from models.cvmatch import CVMatchResult
-from services.templates import get_templates
+from py.models.cvmatch import CVMatchResult
+from py.services.templates import get_templates
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from fastapi import FastAPI
@@ -18,17 +18,17 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
-from models.cv import CV
-from models.jd import ParsedJD
-from models.requests import (
+from py.models.cv import CV
+from py.models.jd import ParsedJD
+from py.models.requests import (
     CompileCVRequest,
     MatchCVRequest,
     ParseJDRequest,
 )
-from models.responses import AIResponse, ErrorResponse, TemplateListResponse
-from services.cv_compiler import CVCompiler
-from services.cv_jd_matcher import match_cv_entries
-from services.jd_parser import parse_job_description
+from py.models.responses import AIResponse, ErrorResponse, TemplateListResponse
+from py.services.cv_compiler import CVCompiler
+from py.services.cv_jd_matcher import match_cv_entries
+from py.services.jd_parser import parse_job_description
 
 import os
 from dotenv import load_dotenv

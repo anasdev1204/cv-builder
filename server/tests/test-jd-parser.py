@@ -1,6 +1,6 @@
 import json
 
-from services.jd_parser import parse_job_description
+from py.services.jd_parser import parse_job_description
 from pathlib import Path
 
 dir_path = Path(__file__).parent / "../test_data"

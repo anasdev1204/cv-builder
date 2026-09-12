@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
-from models.jd import ParsedJD
+from py.models.jd import ParsedJD
 
 load_dotenv()
 

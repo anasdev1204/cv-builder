@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 from docx import Document
 
-from models.cv import (
+from py.models.cv import (
     CV,
     SectionMeta,
     UserData,
@@ -11,7 +11,7 @@ from models.cv import (
     SectionEntry,
 )
 
-from services.cv_compiler import CVCompiler
+from py.services.cv_compiler import CVCompiler
 
 
 @pytest.fixture
