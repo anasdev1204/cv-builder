@@ -107,7 +107,7 @@ export default function CompileCVView() {
         template_name: selectedTemplate,
         version: selectedVersion,
         template_config: templates[selectedTemplate],
-        excludedData: excludedData,
+        excluded_data: excludedData,
         output_format: selectedFormat
       });
 

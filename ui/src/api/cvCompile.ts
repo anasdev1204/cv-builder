@@ -7,7 +7,7 @@ export interface CompileCVRequest {
   template_name: string;
   version: string;
   template_config: TemplateConfig | null;
-  excludedData: string[];
+  excluded_data: string[];
   output_format: string;
 }
 
