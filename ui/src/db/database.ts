@@ -1,7 +1,7 @@
 // src/db/database.ts
 
 import Dexie, { type Table } from 'dexie';
-import type { CVEntryMatch, CVRaw, ParsedJD } from '@/types';
+import type { CVEntryMatch, CVRaw, ParsedJD, TemplateConfig } from '@/types';
 
 export interface StoredCV {
   id: string;
@@ -30,11 +30,19 @@ export interface StoredSettings {
   model: string;
 }
 
+export interface StoredTemplate {
+  id: string;
+  name: string;
+  config: TemplateConfig;
+  updatedAt: number;
+}
+
 class CVDatabase extends Dexie {
   cvs!: Table<StoredCV, string>;
   jobDescriptions!: Table<StoredJobDescription, string>;
   matchedCVs!: Table<StoredMatchedCV, string>;
   settings!: Table<StoredSettings, string>;
+  templates!: Table<StoredTemplate, string>;
 
   constructor() {
     super('cv-builder');
@@ -44,6 +52,10 @@ class CVDatabase extends Dexie {
       matchedCVs: 'id, createdAt',
       jobDescriptions: 'id, createdAt',
       settings: 'id',
+    });
+
+    this.version(2).stores({
+      templates: 'id, updatedAt',
     });
   }
 }

@@ -3,6 +3,7 @@ import { Box } from '@mantine/core';
 import EditCVView from '@/views/edit-cv';
 import Navbar from '@/components/navbar';
 import CompileCVView from './views/compile-cv';
+import TemplateView from './views/template';
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
             {/* Placeholder routes for the remaining nav links */}
             <Route path="/compilecv" element={<CompileCVView />} />
             <Route path="/matchcv" element={<Box>Match CV View</Box>} />
-            <Route path="/templates" element={<Box>Templates View</Box>} />
+            <Route path="/templates" element={<TemplateView />} />
 
             {/* Fallback redirect */}
             <Route path="*" element={<Navigate to="/editcv" replace />} />
