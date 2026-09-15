@@ -76,15 +76,18 @@ class CVCompiler:
     async def compile(
         self,
         cv: CV,
+        excluded_data: dict | None = None,
         template: str = "professional",
         output_format: str = "pdf",
         selected_version: str = "en",
         job_title: str = "Unknown",
         local: bool = True,
     ):
+        print("COMPILE STARTING")
         docx_path = self._compile_docx(
             cv=cv,
             job_title=job_title,
+            excluded_data=excluded_data,
             template=template,
             selected_version=selected_version,
         )
@@ -111,13 +114,15 @@ class CVCompiler:
         job_title: str,
         template: str,
         selected_version: str,
+        excluded_data: dict | None
     ) -> Path:
-        
+        print("COMPILING DOCX")
         if self.template_config is not None:
             config = self.template_config
         else:
             config = self.template_loader.load(template)
 
+        print("DOCUMENT CREATED")
         document = Document()
 
         user_data = cv.user_data
@@ -150,6 +155,7 @@ class CVCompiler:
             document,
             cv_version,
             config,
+            excluded_data
         )
 
         output_path = (
@@ -310,12 +316,23 @@ class CVCompiler:
         document: Document,
         cv_sections: CvSections,
         config: TemplateConfig,
+        excluded_data: dict | None
     ):
-
+        print("RENDERING SECTIONS")  
+        print(excluded_data)
         sections = cv_sections
 
         for section_name, data in sections.__dict__.items():
+            print(f"RENDERING SECTION: {section_name}")
             if data is None:
+                continue
+
+            section_excluded = excluded_data[section_name] if excluded_data is not None and section_name in excluded_data else None
+
+            print(f"SECTION EXCLUDED: {section_excluded}")
+            
+            if section_excluded is not None and '0' in section_excluded and section_excluded['0'] is False:
+                print(f"SECTION {section_name} EXCLUDED")
                 continue
 
             if isinstance(data, SectionMeta):
@@ -342,10 +359,17 @@ class CVCompiler:
                     content,
                     section_config,
                     config,
+                    section_excluded
                 )
 
             elif isinstance(data, dict):
-                for _, sub_data in data.items():
+                for other_section_name, sub_data in data.items():
+                    other_section_excluded = section_excluded[other_section_name] if section_excluded is not None and other_section_name in section_excluded else None
+
+                    if other_section_excluded is not None and '0' in other_section_excluded and other_section_excluded['0'] is False:
+                        print(f"SECTION {section_name}/{other_section_name} EXCLUDED")
+                        continue
+
                     if not sub_data:
                         continue
 
@@ -364,6 +388,7 @@ class CVCompiler:
                         content,
                         section_config,
                         config,
+                        other_section_excluded
                     )
 
     def _infer_renderer(self, content) -> str:
@@ -393,12 +418,12 @@ class CVCompiler:
         content: str | list[SectionEntry] | list[str],
         section_config: SectionRendererConfig,
         config: TemplateConfig,
+        section_excluded: dict | None
     ):
 
         renderer = section_config.renderer
 
-        if renderer == "paragraph":
-
+        if renderer == "paragraph" and not (section_excluded is not None and section_excluded['0'] is False):
             self._add_str(
                 document,
                 title,
@@ -415,6 +440,7 @@ class CVCompiler:
                 content,
                 config,
                 section_config,
+                section_excluded
             )
 
         elif renderer == "inline_list":
@@ -424,7 +450,8 @@ class CVCompiler:
                 title,
                 content,
                 config,
-                section_config
+                section_config,
+                section_excluded
             )
 
         else:
@@ -488,7 +515,9 @@ class CVCompiler:
         content: list[SectionEntry],
         config: TemplateConfig,
         section_config: SectionRendererConfig,
+        section_excluded: dict | None
     ):
+        print("ADDING BP")
         if not content:
             return
 
@@ -505,12 +534,17 @@ class CVCompiler:
             if section_config.entry is not None
             else config.entry
         )
+        print("ADDING ENTRIES", title)
 
-        for entry in content:
+        for i, entry in enumerate(content):
+            if section_excluded is not None and str(i) in section_excluded and section_excluded[str(i)] is False:
+                continue
+
             self._add_entry(
                 document,
                 entry,
                 entry_config,
+                section_excluded[str(i)] if section_excluded is not None and str(i) in section_excluded else None
             )
 
     def _add_list_str(
@@ -520,7 +554,9 @@ class CVCompiler:
         content: list[str],
         config: TemplateConfig,
         section_config: SectionRendererConfig,
+        section_excluded: dict | None
     ):
+        print("ADDING LIST STR")
         if not content:
             return
 
@@ -555,7 +591,12 @@ class CVCompiler:
             else config.list.separator
         )
 
-        run = paragraph.add_run(separator.join(content))
+        filtered_content = [
+            item for i, item in enumerate(content)
+            if not (section_excluded is not None and str(i) in section_excluded and section_excluded[str(i)] is False)
+        ]
+
+        run = paragraph.add_run(separator.join(filtered_content))
 
         font_config = config.list.font
 
@@ -637,12 +678,14 @@ class CVCompiler:
         document: Document,
         entry: SectionEntry,
         config: EntryConfig,
+        section_excluded: dict | None = None,
     ):
         if config.layout == "stacked":
             self._add_stacked_entry(
                 document,
                 entry,
                 config,
+                section_excluded
             )
 
         elif config.layout == "compact":
@@ -650,6 +693,7 @@ class CVCompiler:
                 document,
                 entry,
                 config,
+                section_excluded
             )
 
         elif config.layout == "inline":
@@ -657,6 +701,7 @@ class CVCompiler:
                 document,
                 entry,
                 config,
+                section_excluded
             )
 
     def _add_stacked_entry(
@@ -664,6 +709,7 @@ class CVCompiler:
         document: Document,
         entry: SectionEntry,
         config: EntryConfig,
+        section_excluded: dict | None = None
     ):
         paragraph = document.add_paragraph()
 
@@ -708,6 +754,7 @@ class CVCompiler:
                 document,
                 entry.bullet_points,
                 config.bullets,
+                section_excluded=section_excluded,
             )
 
     def _add_compact_entry(
@@ -715,6 +762,7 @@ class CVCompiler:
         document: Document,
         entry: SectionEntry,
         config: EntryConfig,
+        section_excluded: dict | None = None
     ):
         paragraph = document.add_paragraph()
 
@@ -762,6 +810,7 @@ class CVCompiler:
                 document,
                 entry.bullet_points,
                 config.bullets,
+                section_excluded=section_excluded,
             )
 
     def _add_inline_entry(
@@ -769,6 +818,7 @@ class CVCompiler:
         document: Document,
         entry: SectionEntry,
         config: EntryConfig,
+        section_excluded: dict | None = None
     ):
         paragraph = document.add_paragraph()
 
@@ -813,6 +863,7 @@ class CVCompiler:
                 document,
                 entry.bullet_points,
                 config.bullets,
+                section_excluded=section_excluded,
             )
 
     def _add_dates(
@@ -852,8 +903,13 @@ class CVCompiler:
         document: Document,
         bullets: list[str],
         config: BulletConfig,
+        section_excluded: dict | None = None
     ):
-        for bullet in bullets:
+        for i, bullet in enumerate(bullets):
+            if section_excluded is not None and str(i) in section_excluded and section_excluded[str(i)] is False:
+                print(f"BULLET {bullet} EXCLUDED")
+                continue
+
             paragraph = document.add_paragraph()
 
             paragraph.paragraph_format.left_indent = Inches(

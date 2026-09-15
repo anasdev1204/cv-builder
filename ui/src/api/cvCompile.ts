@@ -7,7 +7,8 @@ export interface CompileCVRequest {
   template_name: string;
   version: string;
   template_config: TemplateConfig | null;
-  excluded_data: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  excluded_data: Record<string, any>;
   output_format: string;
 }
 

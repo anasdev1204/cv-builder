@@ -221,17 +221,20 @@ async def compile_cv_endpoint(
             job_title=body.job_title,
             template=body.template_name,
             output_format=body.output_format,
+            excluded_data=body.excluded_data,
             selected_version=body.version,
             local=False,
         )
 
     except ValueError as exc:
+        print(f"ValueError: {exc}")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(exc),
         )
 
-    except Exception:
+    except Exception as e:
+        print("Unexpected error during CV compilation.", e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to compile the CV.",

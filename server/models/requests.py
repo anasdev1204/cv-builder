@@ -55,6 +55,7 @@ class CompileCVRequest(BaseModel):
     template_name: str = Field(..., min_length=1, max_length=100)
     template_config: TemplateConfig | None = None
     output_format: str = Field(..., min_length=1, max_length=10)
+    excluded_data: dict | None = None
 
     @field_validator("output_format")
     @classmethod

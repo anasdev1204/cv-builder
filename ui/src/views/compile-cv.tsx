@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { IconFileText } from '@tabler/icons-react';
 
-import { isSectionEntry, type SectionEntry, type CVRaw, type TemplateConfig } from '@/types';
+import { isSectionEntry, type CVRaw, type SectionEntry, type TemplateConfig } from '@/types';
 
 import ValidatableInput from '@/components/cv-editor/validatable-input';
 import EntryPicker from '@/components/cv-section-pickers/entry-picker';
@@ -53,7 +53,8 @@ export default function CompileCVView() {
     return null;
   }, [cv, selectedVersion]);
 
-  const [excludedData, setExcludedData] = useState<string[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [excludedData, setExcludedData] = useState<Record<string, any>>({});
 
   const [jobTitle, setJobTitle] = useState<string>('');
 
@@ -73,27 +74,97 @@ export default function CompileCVView() {
 
   const toggleEntry = (sectionKey: string, entryIndex: number) => {
     setExcludedData((prev) => {
-      const entryPath = `${sectionKey}.content.${entryIndex}`;
-
-      if (prev.includes(entryPath)) {
-        return prev.filter((path) => path !== entryPath);
+      const isOtherSection = sectionKey.startsWith('other_sections/');
+      if (isOtherSection) {
+        const [, otherSectionKey] = sectionKey.split('/');
+        const curr = prev.other_sections?.[otherSectionKey]?.[entryIndex];
+        let newValue: boolean;
+        if (curr === undefined) {
+          newValue = false;
+        } else {
+          newValue = !curr;
+        }
+        return {
+          ...prev,
+          other_sections: {
+            ...prev.other_sections,
+            [otherSectionKey]: {
+              ...prev.other_sections?.[otherSectionKey],
+              [entryIndex]: newValue
+            },
+          },
+        };
       }
 
-      return [...prev, entryPath];
+      const curr = prev[sectionKey]?.[entryIndex];
+      let newValue: boolean;
+      if (curr === undefined) {
+        newValue = false;
+      } else {
+        newValue = !curr;
+      }
+
+      return {
+        ...prev,
+        [sectionKey]: {
+          ...prev[sectionKey],
+          [entryIndex]: newValue
+        },
+      }
     });
   };
 
   const toggleBulletPoint = (sectionKey: string, entryIndex: number, bulletIndex: number) => {
     setExcludedData((prev) => {
-      const bulletPath = `${sectionKey}.content.${entryIndex}.${bulletIndex}`;
-
-      if (prev.includes(bulletPath)) {
-        return prev.filter((path) => path !== bulletPath);
+      const isOtherSection = sectionKey.startsWith('other_sections/');
+      if (isOtherSection) {
+        const [, otherSectionKey] = sectionKey.split('/');
+        const curr = prev.other_sections?.[otherSectionKey]?.[entryIndex]?.[bulletIndex];
+        let newValue: boolean;
+        if (curr === undefined) {
+          newValue = false;
+        } else {
+          newValue = !curr;
+        }
+        return {
+          ...prev,
+          other_sections: {
+            ...prev.other_sections,
+            [otherSectionKey]: {
+              ...prev.other_sections?.[otherSectionKey],
+              [entryIndex]: {
+                ...prev.other_sections?.[otherSectionKey]?.[entryIndex],
+                [bulletIndex]: newValue
+              },
+            },
+          },
+        };
+      }
+      
+      const curr = prev[sectionKey]?.[entryIndex]?.[bulletIndex];
+      let newValue: boolean;
+      if (curr === undefined) {
+        newValue = false;
+      } else {
+        newValue = !curr;
       }
 
-      return [...prev, bulletPath];
+      return {
+        ...prev,
+        [sectionKey]: {
+          ...prev[sectionKey],
+          [entryIndex]: {
+            ...prev[sectionKey]?.[entryIndex],
+            [bulletIndex]: newValue,
+          },
+        },
+      }
     });
   };
+
+  useEffect(() => {
+    console.log('Excluded Data:', excludedData);
+  }, [excludedData])
 
   const handleCompile = async () => {
     try {
@@ -106,7 +177,7 @@ export default function CompileCVView() {
         job_title: jobTitle,
         template_name: selectedTemplate,
         version: selectedVersion,
-        template_config: templates[selectedTemplate],
+        template_config: null,
         excluded_data: excludedData,
         output_format: selectedFormat
       });
@@ -217,7 +288,7 @@ export default function CompileCVView() {
 
       <ParagraphPicker
         sectionKey="summary"
-        excludedData={excludedData}
+        excluded_data={excludedData}
         section={{
           title: activeVersion.summary.title,
           content: activeVersion.summary.content as string[],
@@ -227,7 +298,7 @@ export default function CompileCVView() {
 
       <EntryPicker
         sectionKey="experience"
-        excludedData={excludedData}
+        excluded_data={excludedData}
         section={{
           title: activeVersion.experience.title,
           content: activeVersion.experience.content as SectionEntry[],
@@ -238,7 +309,7 @@ export default function CompileCVView() {
 
       <EntryPicker
         sectionKey="education"
-        excludedData={excludedData}
+        excluded_data={excludedData}
         section={{
           title: activeVersion.education.title,
           content: activeVersion.education.content as SectionEntry[],
@@ -249,7 +320,7 @@ export default function CompileCVView() {
 
       <ListPicker
         sectionKey="skills"
-        excludedData={excludedData}
+        excluded_data={excludedData}
         section={{
           title: activeVersion.skills.title,
           content: activeVersion.skills.content as string[],
@@ -259,7 +330,7 @@ export default function CompileCVView() {
 
       <ListPicker
         sectionKey="languages"
-        excludedData={excludedData}
+        excluded_data={excludedData}
         section={{
           title: activeVersion.languages.title,
           content: activeVersion.languages.content as string[],
@@ -272,8 +343,8 @@ export default function CompileCVView() {
           return (
             <ParagraphPicker
               key={key}
-              sectionKey={'other_sections.' + key}
-              excludedData={excludedData}
+              sectionKey={'other_sections/' + key}
+              excluded_data={excludedData}
               section={{
                 title: section.title,
                 content: [section.content],
@@ -287,8 +358,8 @@ export default function CompileCVView() {
           return (
             <ListPicker
               key={key}
-              sectionKey={'other_sections.' + key}
-              excludedData={excludedData}
+              sectionKey={'other_sections/' + key}
+              excluded_data={excludedData}
               section={{
                 title: section.title,
                 content: section.content as string[],
@@ -302,8 +373,8 @@ export default function CompileCVView() {
           return (
             <EntryPicker
               key={key}
-              sectionKey={'other_sections.' + key}
-              excludedData={excludedData}
+              sectionKey={'other_sections/' + key}
+              excluded_data={excludedData}
               section={{
                 title: section.title,
                 content: section.content as SectionEntry[],

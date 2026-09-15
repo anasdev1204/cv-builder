@@ -3,7 +3,8 @@ import { Card, Checkbox, Paper, Stack, Title, Text } from '@mantine/core';
 
 interface EntryPickerProps {
   sectionKey: string;
-  excludedData: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  excluded_data: Record<string, any>;
   section: {
     title: string;
     content: SectionEntry[];
@@ -13,7 +14,7 @@ interface EntryPickerProps {
 }
 
 export default function EntryPicker({
-  excludedData,
+  excluded_data,
   sectionKey,
   section,
   toggleEntry,
@@ -26,7 +27,15 @@ export default function EntryPicker({
       </Title>
       <Stack gap="md">
         {section.content.map((entry: SectionEntry, entryIdx: number) => {
-          const isEntryExcluded = excludedData.includes(`${sectionKey}.content.${entryIdx}`);
+          let isEntryExcluded: boolean;
+
+          if (sectionKey.includes("other_sections/")) {
+            const otherSectionKey = sectionKey.split("other_sections/")[1];
+            isEntryExcluded = excluded_data['other_sections']?.[otherSectionKey]?.[0] === false;
+          } else {
+            isEntryExcluded = excluded_data[sectionKey]?.[entryIdx] === false;
+          }
+
           return (
             <Card key={entryIdx} withBorder bg={isEntryExcluded ? 'gray.1' : 'white'}>
               <Checkbox
@@ -42,9 +51,13 @@ export default function EntryPicker({
               {!isEntryExcluded && entry.bullet_points?.length > 0 && (
                 <Stack gap="xs" mt="sm" ml="lg">
                   {entry.bullet_points.map((bp: string, bpIdx: number) => {
-                    const isBpExcluded = excludedData.includes(
-                      `${sectionKey}.content.${entryIdx}.${bpIdx}`,
-                    );
+                    let isBpExcluded: boolean;
+                    if (sectionKey.includes("other_sections/")) {
+                      const otherSectionKey = sectionKey.split("other_sections/")[1];
+                      isBpExcluded = excluded_data['other_sections']?.[otherSectionKey]?.[entryIdx]?.[bpIdx] === false;
+                    } else {
+                      isBpExcluded = excluded_data[sectionKey]?.[entryIdx]?.[bpIdx] === false;
+                    }
                     return (
                       <Checkbox
                         key={bpIdx}
