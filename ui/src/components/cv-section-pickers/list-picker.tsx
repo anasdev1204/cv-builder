@@ -26,8 +26,8 @@ export default function ListPicker({
         {section.content.map((item: string, itemIdx: number) => {
           let isExcluded: boolean;
 
-          if (sectionKey.includes("other_sections/")) {
-            const otherSectionKey = sectionKey.split("other_sections/")[1];
+          if (sectionKey.includes('other_sections/')) {
+            const otherSectionKey = sectionKey.split('other_sections/')[1];
             isExcluded = excluded_data['other_sections']?.[otherSectionKey]?.[0] === false;
           } else {
             isExcluded = excluded_data[sectionKey]?.[itemIdx] === false;

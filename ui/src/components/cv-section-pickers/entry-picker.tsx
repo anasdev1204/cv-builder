@@ -29,8 +29,8 @@ export default function EntryPicker({
         {section.content.map((entry: SectionEntry, entryIdx: number) => {
           let isEntryExcluded: boolean;
 
-          if (sectionKey.includes("other_sections/")) {
-            const otherSectionKey = sectionKey.split("other_sections/")[1];
+          if (sectionKey.includes('other_sections/')) {
+            const otherSectionKey = sectionKey.split('other_sections/')[1];
             isEntryExcluded = excluded_data['other_sections']?.[otherSectionKey]?.[0] === false;
           } else {
             isEntryExcluded = excluded_data[sectionKey]?.[entryIdx] === false;
@@ -52,9 +52,11 @@ export default function EntryPicker({
                 <Stack gap="xs" mt="sm" ml="lg">
                   {entry.bullet_points.map((bp: string, bpIdx: number) => {
                     let isBpExcluded: boolean;
-                    if (sectionKey.includes("other_sections/")) {
-                      const otherSectionKey = sectionKey.split("other_sections/")[1];
-                      isBpExcluded = excluded_data['other_sections']?.[otherSectionKey]?.[entryIdx]?.[bpIdx] === false;
+                    if (sectionKey.includes('other_sections/')) {
+                      const otherSectionKey = sectionKey.split('other_sections/')[1];
+                      isBpExcluded =
+                        excluded_data['other_sections']?.[otherSectionKey]?.[entryIdx]?.[bpIdx] ===
+                        false;
                     } else {
                       isBpExcluded = excluded_data[sectionKey]?.[entryIdx]?.[bpIdx] === false;
                     }

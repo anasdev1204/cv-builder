@@ -19,8 +19,8 @@ export default function ParagraphPicker({
   toggleParagraph,
 }: ListPickerProps) {
   const isExcluded = useMemo(() => {
-    if (sectionKey.includes("other_sections/")) {
-      const otherSectionKey = sectionKey.split("other_sections/")[1];
+    if (sectionKey.includes('other_sections/')) {
+      const otherSectionKey = sectionKey.split('other_sections/')[1];
       return excluded_data['other_sections']?.[otherSectionKey]?.[0] === false;
     }
     return excluded_data[sectionKey]?.[0] === false;

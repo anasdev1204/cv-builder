@@ -357,9 +357,7 @@ export default function TemplateView() {
               <NumberInput
                 label="Base Font Size (pt)"
                 value={config.font.size}
-                onChange={(v) =>
-                  setConfig((c) => ({ ...c, font: { ...c.font, size: Number(v) } }))
-                }
+                onChange={(v) => setConfig((c) => ({ ...c, font: { ...c.font, size: Number(v) } }))}
               />
             </Grid.Col>
             <Grid.Col span={4}>

@@ -76,8 +76,9 @@ export default function CompileCVView() {
           remappedTemplates[template + '-' + 'server'] = fetchedTemplates.templates[template];
         }
         return {
-          ...prev, ...remappedTemplates
-        }
+          ...prev,
+          ...remappedTemplates,
+        };
       });
       setSelectedTemplate(Object.keys(fetchedTemplates.templates)[0] || 'professional-server');
     }
@@ -88,18 +89,18 @@ export default function CompileCVView() {
       setTemplates((prev) => {
         const remappedTemplates: Record<string, TemplateConfig> = {};
         for (const template in localTemplates) {
-          remappedTemplates[localTemplates[template].name + '-' + 'local'] = localTemplates[template].config;
+          remappedTemplates[localTemplates[template].name + '-' + 'local'] =
+            localTemplates[template].config;
         }
         return {
-          ...prev, ...remappedTemplates
-        }
+          ...prev,
+          ...remappedTemplates,
+        };
       });
 
       setSelectedTemplate(localTemplates[0]?.name + '-local' || 'professional-server');
     }
-
   }, [localTemplates]);
-
 
   const toggleEntry = (sectionKey: string, entryIndex: number) => {
     setExcludedData((prev) => {
@@ -119,7 +120,7 @@ export default function CompileCVView() {
             ...prev.other_sections,
             [otherSectionKey]: {
               ...prev.other_sections?.[otherSectionKey],
-              [entryIndex]: newValue
+              [entryIndex]: newValue,
             },
           },
         };
@@ -137,9 +138,9 @@ export default function CompileCVView() {
         ...prev,
         [sectionKey]: {
           ...prev[sectionKey],
-          [entryIndex]: newValue
+          [entryIndex]: newValue,
         },
-      }
+      };
     });
   };
 
@@ -163,7 +164,7 @@ export default function CompileCVView() {
               ...prev.other_sections?.[otherSectionKey],
               [entryIndex]: {
                 ...prev.other_sections?.[otherSectionKey]?.[entryIndex],
-                [bulletIndex]: newValue
+                [bulletIndex]: newValue,
               },
             },
           },
@@ -187,13 +188,13 @@ export default function CompileCVView() {
             [bulletIndex]: newValue,
           },
         },
-      }
+      };
     });
   };
 
   useEffect(() => {
     console.log('Excluded Data:', excludedData);
-  }, [excludedData])
+  }, [excludedData]);
 
   const handleCompile = async () => {
     try {
@@ -201,17 +202,19 @@ export default function CompileCVView() {
         throw new Error('Job title is required');
       }
 
-      const template_name = selectedTemplate.endsWith('-local') ? selectedTemplate.split('-local')[0] : selectedTemplate.split('-server')[0];
+      const template_name = selectedTemplate.endsWith('-local')
+        ? selectedTemplate.split('-local')[0]
+        : selectedTemplate.split('-server')[0];
       let templateConfig: TemplateConfig | null = null;
       console.log(selectedTemplate);
-      
+
       if (selectedTemplate.endsWith('-local')) {
         console.log('Using local template:', selectedTemplate);
         templateConfig = templates[selectedTemplate] || null;
       }
 
       console.log(templateConfig);
-      
+
       const blob = await execute({
         cv_data: cv as CVRaw,
         job_title: jobTitle,
@@ -219,7 +222,7 @@ export default function CompileCVView() {
         version: selectedVersion,
         template_config: templateConfig,
         excluded_data: excludedData,
-        output_format: selectedFormat
+        output_format: selectedFormat,
       });
 
       const url = window.URL.createObjectURL(blob);

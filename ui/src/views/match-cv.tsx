@@ -16,17 +16,9 @@ import {
   Accordion,
   Stepper,
 } from '@mantine/core';
-import {
-  IconAlertCircle,
-  IconSparkles,
-  IconArrowRight,
-  IconArrowLeft,
-} from '@tabler/icons-react';
+import { IconAlertCircle, IconSparkles, IconArrowRight, IconArrowLeft } from '@tabler/icons-react';
 import { useAPI } from '@/hooks/useAPI';
-import type {
-  ParsedJD,
-  CVEntryMatch,
-} from '@/types';
+import type { ParsedJD, CVEntryMatch } from '@/types';
 import { useCV } from '@/hooks/useDB/useCV';
 import { parseJobDescription } from '@/api/jobDescription';
 import { matchCV } from '@/api/cvmatch';
@@ -44,11 +36,7 @@ export default function MatchCv() {
     execute: executeParseJd,
   } = useAPI(parseJobDescription);
 
-  const {
-    loading: isMatchingCv,
-    error: matchError,
-    execute: executeMatchCv,
-  } = useAPI(matchCV);
+  const { loading: isMatchingCv, error: matchError, execute: executeMatchCv } = useAPI(matchCV);
 
   // 3. Local Wizard State
   const [activeStep, setActiveStep] = useState(0);
@@ -209,7 +197,11 @@ export default function MatchCv() {
               )}
 
               <Group justify="space-between" mt="md">
-                <Button variant="default" leftSection={<IconArrowLeft size={16} />} onClick={() => setActiveStep(0)}>
+                <Button
+                  variant="default"
+                  leftSection={<IconArrowLeft size={16} />}
+                  onClick={() => setActiveStep(0)}
+                >
                   Back
                 </Button>
                 <Button
@@ -225,159 +217,166 @@ export default function MatchCv() {
           </Stepper.Step>
 
           {/* STEP 3: MATCH RESULTS */}
-        <Stepper.Step label="Match Results" description="Review matched skills & requirements">
+          <Stepper.Step label="Match Results" description="Review matched skills & requirements">
             <Stack gap="md" mt="xl">
-                <Group justify="space-between">
+              <Group justify="space-between">
                 <div>
-                    <Title order={3}>Match Analysis</Title>
-                    <Text size="sm" c="dimmed">
+                  <Title order={3}>Match Analysis</Title>
+                  <Text size="sm" c="dimmed">
                     Breakdown of matched keywords, skills, and qualifications per CV entry.
-                    </Text>
+                  </Text>
                 </div>
                 {matches && <Badge color="blue">{matches.length} Entries Analyzed</Badge>}
-                </Group>
+              </Group>
 
-                {matches && (
+              {matches && (
                 <Accordion variant="separated" radius="md">
-                    {matches.map((match) => {
+                  {matches.map((match) => {
                     const totalMatches =
-                        match.matched_keywords.length +
-                        match.matched_technical_skills.length +
-                        match.matched_soft_skills.length +
-                        match.matched_tools_and_technologies.length +
-                        match.matched_qualifications.length +
-                        match.matched_experience_requirements.length +
-                        match.matched_domain_terms.length;
+                      match.matched_keywords.length +
+                      match.matched_technical_skills.length +
+                      match.matched_soft_skills.length +
+                      match.matched_tools_and_technologies.length +
+                      match.matched_qualifications.length +
+                      match.matched_experience_requirements.length +
+                      match.matched_domain_terms.length;
 
                     return (
-                        <Accordion.Item key={match.cv_entry_index} value={`match-${match.cv_entry_index}`}>
+                      <Accordion.Item
+                        key={match.cv_entry_index}
+                        value={`match-${match.cv_entry_index}`}
+                      >
                         <Accordion.Control>
-                            <Group justify="space-between" pr="xs">
+                          <Group justify="space-between" pr="xs">
                             <Text size="sm" fw={600}>
-                                CV Entry #{match.cv_entry_index + 1}
+                              CV Entry #{match.cv_entry_index + 1}
                             </Text>
                             <Badge color={totalMatches > 0 ? 'green' : 'gray'} variant="light">
-                                {totalMatches} Matches Found
+                              {totalMatches} Matches Found
                             </Badge>
-                            </Group>
+                          </Group>
                         </Accordion.Control>
                         <Accordion.Panel>
-                            <Stack gap="sm">
+                          <Stack gap="sm">
                             {/* Technical Skills */}
                             {match.matched_technical_skills.length > 0 && (
-                                <div>
+                              <div>
                                 <Text size="xs" fw={700} c="dimmed" mb={4}>
-                                    TECHNICAL SKILLS
+                                  TECHNICAL SKILLS
                                 </Text>
                                 <Group gap="xs">
-                                    {match.matched_technical_skills.map((skill, i) => (
+                                  {match.matched_technical_skills.map((skill, i) => (
                                     <Badge key={i} color="blue" variant="light">
-                                        {skill}
+                                      {skill}
                                     </Badge>
-                                    ))}
+                                  ))}
                                 </Group>
-                                </div>
+                              </div>
                             )}
 
                             {/* Tools & Technologies */}
                             {match.matched_tools_and_technologies.length > 0 && (
-                                <div>
+                              <div>
                                 <Text size="xs" fw={700} c="dimmed" mb={4}>
-                                    TOOLS & TECHNOLOGIES
+                                  TOOLS & TECHNOLOGIES
                                 </Text>
                                 <Group gap="xs">
-                                    {match.matched_tools_and_technologies.map((tool, i) => (
+                                  {match.matched_tools_and_technologies.map((tool, i) => (
                                     <Badge key={i} color="cyan" variant="light">
-                                        {tool}
+                                      {tool}
                                     </Badge>
-                                    ))}
+                                  ))}
                                 </Group>
-                                </div>
+                              </div>
                             )}
 
                             {/* Soft Skills */}
                             {match.matched_soft_skills.length > 0 && (
-                                <div>
+                              <div>
                                 <Text size="xs" fw={700} c="dimmed" mb={4}>
-                                    SOFT SKILLS
+                                  SOFT SKILLS
                                 </Text>
                                 <Group gap="xs">
-                                    {match.matched_soft_skills.map((skill, i) => (
+                                  {match.matched_soft_skills.map((skill, i) => (
                                     <Badge key={i} color="teal" variant="light">
-                                        {skill}
+                                      {skill}
                                     </Badge>
-                                    ))}
+                                  ))}
                                 </Group>
-                                </div>
+                              </div>
                             )}
 
                             {/* Experience Requirements & Qualifications */}
                             {(match.matched_experience_requirements.length > 0 ||
-                                match.matched_qualifications.length > 0) && (
-                                <div>
+                              match.matched_qualifications.length > 0) && (
+                              <div>
                                 <Text size="xs" fw={700} c="dimmed" mb={4}>
-                                    QUALIFICATIONS & EXPERIENCE
+                                  QUALIFICATIONS & EXPERIENCE
                                 </Text>
                                 <Group gap="xs">
-                                    {match.matched_qualifications.map((qual, i) => (
+                                  {match.matched_qualifications.map((qual, i) => (
                                     <Badge key={`q-${i}`} color="violet" variant="light">
-                                        {qual}
+                                      {qual}
                                     </Badge>
-                                    ))}
-                                    {match.matched_experience_requirements.map((exp, i) => (
+                                  ))}
+                                  {match.matched_experience_requirements.map((exp, i) => (
                                     <Badge key={`e-${i}`} color="grape" variant="light">
-                                        {exp}
+                                      {exp}
                                     </Badge>
-                                    ))}
+                                  ))}
                                 </Group>
-                                </div>
+                              </div>
                             )}
 
                             {/* Domain Terms & Keywords */}
                             {(match.matched_domain_terms.length > 0 ||
-                                match.matched_keywords.length > 0) && (
-                                <div>
+                              match.matched_keywords.length > 0) && (
+                              <div>
                                 <Text size="xs" fw={700} c="dimmed" mb={4}>
-                                    DOMAIN TERMS & KEYWORDS
+                                  DOMAIN TERMS & KEYWORDS
                                 </Text>
                                 <Group gap="xs">
-                                    {match.matched_domain_terms.map((term, i) => (
+                                  {match.matched_domain_terms.map((term, i) => (
                                     <Badge key={`d-${i}`} color="orange" variant="light">
-                                        {term}
+                                      {term}
                                     </Badge>
-                                    ))}
-                                    {match.matched_keywords.map((kw, i) => (
+                                  ))}
+                                  {match.matched_keywords.map((kw, i) => (
                                     <Badge key={`k-${i}`} color="gray" variant="light">
-                                        {kw}
+                                      {kw}
                                     </Badge>
-                                    ))}
+                                  ))}
                                 </Group>
-                                </div>
+                              </div>
                             )}
 
                             {totalMatches === 0 && (
-                                <Text size="sm" c="dimmed" fs="italic">
+                              <Text size="sm" c="dimmed" fs="italic">
                                 No matching skills or requirements identified for this entry.
-                                </Text>
+                              </Text>
                             )}
-                            </Stack>
+                          </Stack>
                         </Accordion.Panel>
-                        </Accordion.Item>
+                      </Accordion.Item>
                     );
-                    })}
+                  })}
                 </Accordion>
-                )}
+              )}
 
-                <Group justify="space-between" mt="md">
-                    <Button variant="default" leftSection={<IconArrowLeft size={16} />} onClick={() => setActiveStep(1)}>
-                        Back
-                    </Button>
-                <Button variant="outline" color="gray" onClick={() => setActiveStep(0)}>
-                    Start New Match
+              <Group justify="space-between" mt="md">
+                <Button
+                  variant="default"
+                  leftSection={<IconArrowLeft size={16} />}
+                  onClick={() => setActiveStep(1)}
+                >
+                  Back
                 </Button>
-                </Group>
+                <Button variant="outline" color="gray" onClick={() => setActiveStep(0)}>
+                  Start New Match
+                </Button>
+              </Group>
             </Stack>
-        </Stepper.Step>
+          </Stepper.Step>
         </Stepper>
       </Paper>
     </Container>
