@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useMemo, useEffect } from 'react';
 import {
   Box,
@@ -27,15 +28,19 @@ import ParagraphPicker from '@/components/cv-section-pickers/paragraph-picker';
 import { compileCV } from '@/api/cvCompile';
 import { getTemplates } from '@/api/getTemplates';
 import { useAPI } from '@/hooks/useAPI';
+import { useTemplate } from '@/hooks/useDB/useTemplate';
 
 export default function CompileCVView() {
   const { data: cv } = useCV();
   const { loading: isCvCompiling, error: cvError, execute } = useAPI(compileCV);
   const { data: fetchedTemplates, execute: fetchTemplates } = useAPI(getTemplates);
-
+  const { templates: localTemplates, reload } = useTemplate();
   useEffect(() => {
     fetchTemplates();
   }, [fetchTemplates]);
+  useEffect(() => {
+    reload();
+  }, [reload]);
 
   const { t } = useTranslation();
 
@@ -43,7 +48,6 @@ export default function CompileCVView() {
   const [selectedVersion, setSelectedVersion] = useState<string>('');
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedVersion(availableVersions[0] || '');
   }, [availableVersions]);
   const activeVersion = useMemo(() => {
@@ -59,18 +63,43 @@ export default function CompileCVView() {
   const [jobTitle, setJobTitle] = useState<string>('');
 
   const [templates, setTemplates] = useState<Record<string, TemplateConfig>>({});
-  const [selectedTemplate, setSelectedTemplate] = useState<string>('professional');
+  const [selectedTemplate, setSelectedTemplate] = useState<string>('professional-server');
 
   const availableFormats = useMemo<string[]>(() => ['pdf', 'docx'], []);
   const [selectedFormat, setSelectedFormat] = useState<string>('pdf');
 
   useEffect(() => {
     if (fetchedTemplates) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setTemplates(fetchedTemplates.templates);
-      setSelectedTemplate(Object.keys(fetchedTemplates.templates)[0] || 'professional');
+      setTemplates((prev) => {
+        const remappedTemplates: Record<string, TemplateConfig> = {};
+        for (const template in fetchedTemplates.templates) {
+          remappedTemplates[template + '-' + 'server'] = fetchedTemplates.templates[template];
+        }
+        return {
+          ...prev, ...remappedTemplates
+        }
+      });
+      setSelectedTemplate(Object.keys(fetchedTemplates.templates)[0] || 'professional-server');
     }
   }, [fetchedTemplates]);
+
+  useEffect(() => {
+    if (localTemplates) {
+      setTemplates((prev) => {
+        const remappedTemplates: Record<string, TemplateConfig> = {};
+        for (const template in localTemplates) {
+          remappedTemplates[localTemplates[template].name + '-' + 'local'] = localTemplates[template].config;
+        }
+        return {
+          ...prev, ...remappedTemplates
+        }
+      });
+
+      setSelectedTemplate(localTemplates[0]?.name + '-local' || 'professional-server');
+    }
+
+  }, [localTemplates]);
+
 
   const toggleEntry = (sectionKey: string, entryIndex: number) => {
     setExcludedData((prev) => {
@@ -140,7 +169,7 @@ export default function CompileCVView() {
           },
         };
       }
-      
+
       const curr = prev[sectionKey]?.[entryIndex]?.[bulletIndex];
       let newValue: boolean;
       if (curr === undefined) {
@@ -171,13 +200,24 @@ export default function CompileCVView() {
       if (!jobTitle) {
         throw new Error('Job title is required');
       }
+
+      const template_name = selectedTemplate.endsWith('-local') ? selectedTemplate.split('-local')[0] : selectedTemplate.split('-server')[0];
+      let templateConfig: TemplateConfig | null = null;
+      console.log(selectedTemplate);
+      
+      if (selectedTemplate.endsWith('-local')) {
+        console.log('Using local template:', selectedTemplate);
+        templateConfig = templates[selectedTemplate] || null;
+      }
+
+      console.log(templateConfig);
       
       const blob = await execute({
         cv_data: cv as CVRaw,
         job_title: jobTitle,
-        template_name: selectedTemplate,
+        template_name: template_name,
         version: selectedVersion,
-        template_config: null,
+        template_config: templateConfig,
         excluded_data: excludedData,
         output_format: selectedFormat
       });

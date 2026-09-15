@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 import subprocess
-from turtle import st
+from turtle import heading, st
 from docx.oxml import OxmlElement
 from fastapi.responses import FileResponse
 
@@ -294,10 +294,8 @@ class CVCompiler:
             paragraph.paragraph_format.space_before = Pt(0)
             paragraph.paragraph_format.space_after = Pt(0)
 
-            p = paragraph._p
-            p_pr = p.get_or_add_pPr()
-
-            p_bdr = OxmlElement("w:pBdr")
+            p_pr = paragraph._p.get_or_add_pPr()
+            p_bdr = OxmlElement("w:pBdr") 
             bottom = OxmlElement("w:bottom")
 
             bottom.set(qn("w:val"), "single")
@@ -344,7 +342,7 @@ class CVCompiler:
 
                 section_config = config.sections.get(
                     section_name
-                )
+                ) if config.sections is not None and section_name in config.sections else None
 
                 if section_config is None:
                     section_config = SectionRendererConfig(
@@ -651,7 +649,8 @@ class CVCompiler:
         if heading.show_divider:
             paragraph.paragraph_format.keep_with_next = True
 
-            border = paragraph._p.get_or_add_pPr().get_or_add_pBdr()
+            p_pr = paragraph._p.get_or_add_pPr()
+            border = OxmlElement("w:pBdr")
             bottom = OxmlElement("w:bottom")
 
             bottom.set(
@@ -672,6 +671,7 @@ class CVCompiler:
             )
 
             border.append(bottom)
+            p_pr.append(border)
 
     def _add_entry(
         self,
