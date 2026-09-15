@@ -174,7 +174,7 @@ const DEFAULT_CONFIG: TemplateConfig = {
 export default function TemplateView() {
   const [selectedId, setSelectedId] = useState<string>('');
   const [templateList, setTemplateList] = useState<StoredTemplate[]>([]);
-  const { template, loading, saving, saveConfig } = useTemplate(selectedId);
+  const { templates, loading, saving, saveConfig } = useTemplate(selectedId);
 
   const [name, setName] = useState('New Template');
   const [config, setConfig] = useState<TemplateConfig>(DEFAULT_CONFIG);
@@ -195,12 +195,13 @@ export default function TemplateView() {
 
   // Sync form state when active template selection updates
   useEffect(() => {
-    if (template) {
+    if (templates && templates.length > 0) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setName(template.name);
-      setConfig(template.config);
+      setName(templates[0].name);
+      setConfig(templates[0].config);
+      setSelectedId(templates[0].id);
     }
-  }, [template]);
+  }, [templates]);
 
   // Switch to creating a brand new template
   const handleCreateNew = () => {

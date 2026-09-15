@@ -4,6 +4,7 @@ import EditCVView from '@/views/edit-cv';
 import Navbar from '@/components/navbar';
 import CompileCVView from './views/compile-cv';
 import TemplateView from './views/template';
+import MatchCv from './views/match-cv';
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
 
             {/* Placeholder routes for the remaining nav links */}
             <Route path="/compilecv" element={<CompileCVView />} />
-            <Route path="/matchcv" element={<Box>Match CV View</Box>} />
+            <Route path="/matchcv" element={<MatchCv />} />
             <Route path="/templates" element={<TemplateView />} />
 
             {/* Fallback redirect */}
