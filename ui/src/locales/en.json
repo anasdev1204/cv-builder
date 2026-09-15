@@ -112,7 +112,8 @@
         "title": "Compile CV",
         "templateLabel": "Template",
         "jobTitlePlaceholder": "Job title",
-        "compileButton": "Compile CV"
+        "compileButton": "Compile CV",
+        "formatLabel": "Output Format"
       }
     }
   },

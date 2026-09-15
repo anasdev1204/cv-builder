@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { IconFileText } from '@tabler/icons-react';
 
-import { isSectionEntry, type SectionEntry, type CVRaw } from '@/types';
+import { isSectionEntry, type SectionEntry, type CVRaw, type TemplateConfig } from '@/types';
 
 import ValidatableInput from '@/components/cv-editor/validatable-input';
 import EntryPicker from '@/components/cv-section-pickers/entry-picker';
@@ -25,11 +25,17 @@ import { useCV } from '@/hooks/useDB/useCV';
 import ParagraphPicker from '@/components/cv-section-pickers/paragraph-picker';
 
 import { compileCV } from '@/api/cvCompile';
+import { getTemplates } from '@/api/getTemplates';
 import { useAPI } from '@/hooks/useAPI';
 
 export default function CompileCVView() {
   const { data: cv } = useCV();
-  const { loading: isLoading, error, execute } = useAPI(compileCV);
+  const { loading: isCvCompiling, error: cvError, execute } = useAPI(compileCV);
+  const { data: fetchedTemplates, execute: fetchTemplates } = useAPI(getTemplates);
+
+  useEffect(() => {
+    fetchTemplates();
+  }, [fetchTemplates]);
 
   const { t } = useTranslation();
 
@@ -47,14 +53,23 @@ export default function CompileCVView() {
     return null;
   }, [cv, selectedVersion]);
 
-  // The data will be stored as a path from the selected version to the actual data to exclude as a string, i.e experience.content[1] or skills.content[2] or summary
   const [excludedData, setExcludedData] = useState<string[]>([]);
 
   const [jobTitle, setJobTitle] = useState<string>('');
 
-  // TODO: Add useTemplate hook to dynamically load configuration and layout styling for the selected template
-  const availabelTemplates = ['modern', 'professional'];
-  const [selectedTemplate, setSelectedTemplate] = useState<string>('modern');
+  const [templates, setTemplates] = useState<Record<string, TemplateConfig>>({});
+  const [selectedTemplate, setSelectedTemplate] = useState<string>('professional');
+
+  const availableFormats = useMemo<string[]>(() => ['pdf', 'docx'], []);
+  const [selectedFormat, setSelectedFormat] = useState<string>('pdf');
+
+  useEffect(() => {
+    if (fetchedTemplates) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setTemplates(fetchedTemplates.templates);
+      setSelectedTemplate(Object.keys(fetchedTemplates.templates)[0] || 'professional');
+    }
+  }, [fetchedTemplates]);
 
   const toggleEntry = (sectionKey: string, entryIndex: number) => {
     setExcludedData((prev) => {
@@ -85,12 +100,15 @@ export default function CompileCVView() {
       if (!jobTitle) {
         throw new Error('Job title is required');
       }
+      
       const blob = await execute({
         cv_data: cv as CVRaw,
         job_title: jobTitle,
         template_name: selectedTemplate,
-        template_config: null, // TODO: Add template configuration
-        output_format: 'pdf',
+        version: selectedVersion,
+        template_config: templates[selectedTemplate],
+        excludedData: excludedData,
+        output_format: selectedFormat
       });
 
       const url = window.URL.createObjectURL(blob);
@@ -136,16 +154,16 @@ export default function CompileCVView() {
 
   return (
     <Stack gap="lg" w="100%">
-      {error && (
+      {cvError && (
         <Text c="red" ta="center">
-          {error}
+          {cvError}
         </Text>
       )}
       <Flex align="start" w="100%" gap="md" direction="column">
         <Title order={2}>{t('cv.editor.compile.title')}</Title>
 
         <Grid w="100%">
-          <Grid.Col span={6}>
+          <Grid.Col span={4}>
             <NativeSelect
               label={t('cv.editor.form.versionDropdownLabel')}
               value={selectedVersion}
@@ -154,12 +172,21 @@ export default function CompileCVView() {
             />
           </Grid.Col>
 
-          <Grid.Col span={6}>
+          <Grid.Col span={4}>
             <NativeSelect
               label={t('cv.editor.compile.templateLabel')}
               value={selectedTemplate}
               onChange={(e) => setSelectedTemplate(e.currentTarget.value)}
-              data={availabelTemplates}
+              data={Object.keys(templates)}
+            />
+          </Grid.Col>
+
+          <Grid.Col span={4}>
+            <NativeSelect
+              label={t('cv.editor.compile.formatLabel')}
+              value={selectedFormat}
+              onChange={(e) => setSelectedFormat(e.currentTarget.value)}
+              data={availableFormats}
             />
           </Grid.Col>
 
@@ -169,6 +196,7 @@ export default function CompileCVView() {
               value={jobTitle}
               onChange={(value) => setJobTitle(value)}
               name="jobTitle"
+              isError={jobTitle.trim() === ''}
             />
           </Grid.Col>
         </Grid>
@@ -176,10 +204,10 @@ export default function CompileCVView() {
           color="blue"
           onClick={handleCompile}
           mx="auto"
-          loading={isLoading}
-          disabled={isLoading}
+          loading={isCvCompiling}
+          disabled={isCvCompiling}
         >
-          {isLoading
+          {isCvCompiling
             ? t('cv.editor.compile.compilingButton')
             : t('cv.editor.compile.compileButton')}
         </Button>

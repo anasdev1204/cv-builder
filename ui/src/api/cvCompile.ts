@@ -5,7 +5,9 @@ export interface CompileCVRequest {
   cv_data: CVRaw;
   job_title: string;
   template_name: string;
+  version: string;
   template_config: TemplateConfig | null;
+  excludedData: string[];
   output_format: string;
 }
 
